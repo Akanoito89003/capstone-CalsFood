@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Layout_Login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Profile_Login.css') }}">
+    <title>Profile</title>
+</head>
+<body>
+    <div class="topic">
+        <div class="name">
+            <h1>CalsFood</h1>
+            <h4>เว็บไซต์คำนวนแคลลอรี่อาหารตามสั่งไทย</h4>
+        </div>
+        <img src="{{ url_for('static', filename='Image/BG-topic.webp') }}">
+    </div>
+
+    <div class="menu-bar">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='Image/logo.webp') }}">
+            <h2>CalsFood</h2>
+        </div>
+
+        {%if user.is_authenticated %}
+        <a class="button" id="Home_Login" href="/">Home</a> 
+        <a class="button" id="Design" href="/design">Design</a>
+        <a class="button" id="AI" href="/ai-test">AI</a>
+        <a class="button" id="Inventory" href="/inventory">Inventory</a>
+        {% else %}
+        {# ถ้าuser ยังไม่ได้มีการ login เมื่อกดหน้าอื่น ให้มันไปแสดงที่หน้า Signin หรือ Login #}
+        <a class="button" id="Home_Logout" href="/">Home</a>
+        <a class="button" id="Design" href="/design">Design</a>
+        <a class="button" id="AI" href="/ai-test">AI</a>
+        <a class="button" id="Inventory" href="/inventory">Inventory</a>
+        {% endif %}
+
+        {%if user.is_authenticated %}
+        <div class="account" data-profile-url="{{ url_for('views.profile') }}" data-logout-url="{{ url_for('auth.logout') }}">
+            {% if user.profile_image %}
+                <img id="icon-profile" src="{{ url_for('static', filename='profile_pics/' + user.profile_image) }}" alt="Profile Picture">
+            {% else %}
+                <img id="icon-profile" src="{{ url_for('static', filename='Image/icon-profile.png') }}" alt="Default Profile">
+            {% endif %}
+            <p>{{ user.Username }}</p>
+            <img id="setting" src="{{ url_for('static', filename='Image/icon-Hamburger.png') }}">
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="background">
+        <img src="https://images.pexels.com/photos/349609/pexels-photo-349609.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="">
+    </div>
+
+    <div class="profile">
+        <div class="profile-box">
+            <div class="design">
+                <div class="box">
+                    <div class="box1"></div>
+                    <div class="box2"></div>
+                    <div class="radius1"></div>
+                    <div class="radius2"></div>
+                </div>
+                <div class="box">
+                    <p>User Profile</p>
+                </div>
+                <div class="box">
+                    <div class="box3"></div>
+                    <div class="box4"></div>
+                    <div class="radius3"></div>
+                    <div class="radius4"></div>
+                </div>
+            </div>
+             <!-- Profile Image Upload Section -->
+            <div class="info-item">
+                <label>Profile Picture</label>
+                <div class="info-box">
+                    <div class="profile-image-container">
+                        {% if user.profile_image %}
+                            <img src="{{ url_for('static', filename='profile_pics/' + user.profile_image) }}" 
+                                 class="profile-image" 
+                                 alt="Profile Picture">
+                        {% else %}
+                            <img src="{{ url_for('static', filename='profile_pics/default.png') }}" 
+                                 class="profile-image" 
+                                 alt="Default Profile">
+                        {% endif %}
+                        <div class="button-group edit-mode" style="display: none;">
+                            <button type="button" class="upload-btn" onclick="document.getElementById('profile_image').click()">
+                                Upload New Photo
+                            </button>
+                            <input type="file" name="profile_image" id="profile_image" accept="image/*">
+                            <button type="button" class="delete-image-btn" onclick="deleteProfileImage()">
+                                Delete Photo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-info">
+                <form method="POST" action="{{ url_for('views.profile') }}" id="profile-form" onsubmit="return false;">
+                    <input type="hidden" name="action" value="update_profile">
+                    
+                    <!-- Normal profile view -->
+                    <div class="profile-view">
+                        <div class="info-item">
+                            <label>Username</label>
+                            <div class="info-box">
+                                <p class="display-value">{{ user.Username }}</p>
+                                <input type="text" name="Username" value="{{ user.Username }}" class="edit-input" style="display: none;">
+                            </div>
+                        </div>
+
+                        <div class="flex-container">
+                            <div class="flex-item">
+                                <label>Height (cm)</label>
+                                <div class="info-box">
+                                    <p class="display-value">{{ user.user_height }}</p>
+                                    <input type="number" name="user_height" value="{{ user.user_height }}" class="edit-input" style="display: none;">
+                                </div>
+                                <div class="error-message-profile" id="height-error"></div>
+                            </div>
+                            <div class="flex-item">
+                                <label>Weight (kg)</label>
+                                <div class="info-box">
+                                    <p class="display-value">{{ user.user_weight }}</p>
+                                    <input type="number" name="user_weight" value="{{ user.user_weight }}" class="edit-input" style="display: none;">
+                                </div>
+                                <div class="error-message-profile" id="weight-error"></div>
+                            </div>
+                        </div>
+
+                        <div class="flex-container">
+                            <div class="flex-item">
+                                <label>Birthday</label>
+                                <div class="info-box" style="background-color: #f5f5f5;">
+                                    <p>{{ user.user_birthday }}</p>
+                                </div>
+                            </div>
+                            <div class="flex-item">
+                                <label>Gender</label>
+                                <div class="info-box">
+                                    <p class="display-value">{{ user.user_gender }}</p>
+                                    <select name="user_gender" class="edit-input" style="display: none;">
+                                        <option value="Male" {% if user.user_gender == 'Male' %}selected{% endif %}>Male</option>
+                                        <option value="Female" {% if user.user_gender == 'Female' %}selected{% endif %}>Female</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <label>Email</label>
+                            <div class="info-box" style="background-color: #f5f5f5;">
+                                <p>{{ user.email }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Password change form -->
+                    <div class="password-change-form" style="display: none;">
+                        <div class="info-item">
+                            <label>Current Password</label>
+                            <div class="info-box">
+                                <input type="password" name="current_password" class="password-input" placeholder="Enter current password">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2767/2767146.png" class="toggle-password" alt="Show Password">
+                            </div>
+                            <div class="error-message" id="current-password-error"></div>
+                        </div>
+
+                        <div class="info-item">
+                            <label>New Password</label>
+                            <div class="info-box">
+                                <input type="password" name="new_password" class="password-input" placeholder="Enter new password">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2767/2767146.png" class="toggle-password" alt="Show Password">
+                            </div>
+                            <div class="error-message" id="new-password-error"></div>
+                        </div>
+
+                        <div class="info-item">
+                            <label>Confirm New Password</label>
+                            <div class="info-box">
+                                <input type="password" name="confirm_password" class="password-input" placeholder="Confirm new password">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2767/2767146.png" class="toggle-password" alt="Show Password">
+                            </div>
+                            <div class="error-message" id="confirm-password-error"></div>
+                        </div>
+                    </div>
+
+                    <div class="button-container">
+                        <button type="button" class="edit-button">Edit Profile</button>
+                        <button type="button" class="save-button" style="display: none;">Save</button>
+                        <button type="button" class="cancel-button" style="display: none;">Cancel</button>
+                        <button type="button" class="change-password-button">Change Password</button>
+                        <button type="button" class="save-password-button" style="display: none;">Save Password</button>
+                        <button type="button" class="cancel-password-button" style="display: none;">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="popup-overlay" id="profile-update-popup">
+        <div class="popup">
+            <div class="popup-icon"></div>
+            <h2>สำเร็จ!</h2>
+            <p>แก้ไขโปรไฟล์เรียบร้อยแล้ว</p>
+            <button class="popup-button">ตกลง</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/Layout_Login.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/Profile_Login.js') }}"></script>
+</body>
+</html> 

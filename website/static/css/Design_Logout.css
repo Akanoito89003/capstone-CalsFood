@@ -1,0 +1,800 @@
+/******************************************* Detail of Design *******************************************/
+.content {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin-top: 150px;
+    padding: 0;
+    position: relative;
+}
+
+.left-content {
+    width: 280px;
+    position: fixed;
+    left: 0;
+    height: calc(100vh - 150px);
+    background-color: #ececec;
+    overflow-y: auto;
+    transition: all 0.3s ease;
+}
+
+.left-content.collapsed {
+    transform: translateX(-280px);
+}
+
+.sidebar-toggle-btn {
+    position: fixed;
+    left: 280px;
+    top: 60%;
+    transform: translateY(-50%);
+    width: 25px;
+    height: 40px;
+    background-color: #A5E135;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    padding: 0;
+}
+
+.sidebar-toggle-btn:hover {
+    background-color: #8bc31a;
+}
+
+.sidebar-toggle-btn.collapsed {
+    left: 0;
+    transform: translateY(-50%);
+}
+
+.right-content {
+    margin-left: 280px;
+    width: calc(100% - 280px);
+    padding: 0;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.right-content.expanded {
+    margin-left: 0;
+    width: 100%;
+}
+
+.fixed-header {
+    position: fixed;
+    top: 150px;
+    width: calc(100% - 280px);
+    z-index: 100;
+    background-color: white;
+    transition: all 0.3s ease;
+}
+
+.fixed-header.expanded {
+    width: 100%;
+}
+
+.design {
+    height: 100%;
+    width: 100%;
+    background-color: #ececec;
+    display: flex;
+    flex-direction: column;
+}
+
+.food {
+    width: 240px;
+    height: 155px;
+    background-color: #A5E135;
+    box-shadow: inset 0 0 200px #39592D;
+}
+
+.input-food {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding-top: 10px;
+}
+.icon-timefood {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    width: 55px;
+    height: 55px;
+    background-color: #ffdf27;
+    border: solid 4px #ffffff;
+    border-radius: 100px;
+}
+
+.icon-timefood img {
+    max-width: 45px;
+    height: auto;
+}
+
+.name-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.namefood {
+    width: 140px;
+    padding: 4px;
+    border: 3px solid #A5E135;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.detail-food {
+    margin-left: 18px;
+    margin-top: 8px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.date {
+    margin-left: 25px;
+    padding: 2px;
+    font-size: 14px;
+}
+
+.input-date {
+    padding: 2px;
+    font-size: 14px;
+}
+
+select {
+    padding: 3px;
+    font-size: 14px;
+    width: 120px;
+}
+
+input:focus, select:focus {
+    border-color: #faff87;
+    box-shadow: 0 0 5px #faff87;
+}
+
+label {
+    color: white;
+    font-size: 14px;
+    display: block;
+    text-align: left;
+}
+
+.quantity-input {
+    width: 25px;
+    height: 20px;
+    padding: 0 2px;
+    border: 1px solid #e7e7e7;
+    border-radius: 3px;
+    font-size: 12px;
+    text-align: center;
+    background-color: white;
+}
+
+.quantity-input::-webkit-inner-spin-button,
+.quantity-input::-webkit-outer-spin-button {
+    opacity: 1;
+    height: 15px;
+    width: 12px;
+}
+
+/******************************************* Design Ingredients *******************************************/
+
+
+.ingredients {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 50px;
+}
+
+.spacer {
+    height: 50px;
+    background-color: #f5f5f5;
+}
+
+.design .ingredients {
+    background: #f5f5f5;
+    width: 100%;
+    max-height: none;
+    overflow-y: visible;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.design .ingredient-category {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.design .category-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    background: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border: 1px solid #e7e7e7;
+}
+
+.design .category-header.active {
+    background: #D7F998;
+    color: white;
+}
+
+.design .category-header:hover {
+    background: #A5E135;
+}
+
+.design .category-header span {
+    color: #333;
+}
+
+.design .toggle-btn {
+    margin-right: 10px;
+    color: #666;
+    font-size: 12px;
+}
+
+.design .ingredient-items {
+    padding: 8px;
+    background: #f5f5f5;
+}
+
+.design .ingredient-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 8px 12px;
+    margin: 5px 0;
+    background: #ffffff;
+    border-radius: 5px;
+    border: 1px solid #e7e7e7;
+    transition: transform 0.2s;
+}
+
+.design .ingredient-item:hover {
+    transform: translateX(2px);
+}
+
+.design .buttons {
+    padding: 10px 10px;
+    background: white;
+    border-top: 1px solid #e7e7e7;
+    border-left: 1px solid #e7e7e7;
+    border-right: 1px solid #e7e7e7;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.design .buttons:last-child {
+    border-radius: 0 0 5px 5px;
+    border-bottom: 1px solid #e7e7e7;
+}
+
+.design .reset-button, 
+.design .auto-menu-button {
+    padding: 8px 12px;
+    border: 1px solid #e7e7e7;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    flex: 1;
+    max-width: 120px;
+    text-align: center;
+}
+
+.design .reset-button:hover, 
+.design .auto-menu-button:hover {
+    color: white;
+    background: #000000;
+}
+
+.design .save-button {
+    width: 100%;
+    padding: 10px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.design .save-button:hover {
+    background: #45a049;
+}
+
+.design .add-ingredient {
+    text-align: right;
+    padding: 5px 8px;
+}
+
+.design .add-ingredient button {
+    color: #666;
+    background: none;
+    border: none;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: color 0.2s;
+}
+
+.design .add-ingredient button:hover {
+    color: #333;
+}
+
+.sum_calorie {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 280px;
+    background-color: #393939;
+    z-index: 1;
+}
+
+.sum_calorie p {
+    text-align: center;
+    margin: 0;
+    color: white;
+    font-size: 20px;
+    padding: 8px;
+}
+
+/******************************************* Total Ingredients *******************************************/
+.type {
+    background-color: #EAFFC3;
+    width: 100%;
+}
+
+.type h1 {
+    text-align: center;
+    margin: 0;
+    padding: 15px;
+}
+
+.type-ingredient {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #D7F998;
+    width: 100%;
+}
+
+.scrollable-content {
+    margin-top: 100px;
+    width: 100%;
+}
+
+.total-ingredients {
+    display: flex;
+    flex-direction: column;
+}
+
+.sum-ingredients {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-left: 0;
+    padding: 10px;
+}
+
+.buttons-container {
+    display: flex;
+    gap: 5px;
+}
+
+.buttons-container .button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #D7F998;
+    width: 100px;
+    border: none;
+    cursor: pointer;
+    padding: 5px 10px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background-color 0.3s;
+}
+
+.buttons-container .button.active {
+    background-color: #A5E135;
+}
+
+.buttons-container .button:hover {
+    background-color: #A5E135;
+}
+
+.search-bar {
+    position: relative;
+    width: 250px;
+}
+
+.search-bar input {
+    padding: 6px 30px 6px 40px;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    outline: none;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.search-bar input:focus {
+    border-color: #A5E135;
+    box-shadow: 0 0 5px #87c514;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.box {
+    width: 190px;
+    height: 270px;
+    margin: 30px 0 30px 30px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+}
+
+.box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.box img {
+    width: 100%;
+    height: 140px;
+    object-fit: contain;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.box h1 {
+    font-size: 18px;
+    margin: 8px 0;
+    color: #333;
+}
+
+.box p {
+    margin: 4px 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.box button {
+    margin-top: 12px;
+    padding: 6px 16px;
+    background-color: #A5E135;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.box button:hover {
+    background-color: #8bc31a;
+    transform: translateY(-1px);
+}
+
+.ingredient-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 8px 12px;
+    margin: 5px 0;
+    background: #ffffff;
+    border-radius: 5px;
+    border: 1px solid #e7e7e7;
+    transition: transform 0.2s;
+}
+
+.ingredient-item:hover {
+    transform: translateX(2px);
+}
+
+.ingredient-info {
+    flex: 1;
+    margin-left: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.ingredient-info span {
+    flex: 1;
+}
+
+.calorie-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.quantity-delete-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: auto;
+    padding-left: 10px;
+}
+
+.ingredient-item .delete-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.ingredient-item .delete-btn:hover {
+    background-color: #ff4444;
+}
+
+.ingredient-item .delete-btn img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(0%) contrast(100%);
+    transition: filter 0.2s;
+}
+
+.ingredient-item .delete-btn:hover img {
+    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
+}
+
+.food-img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: contain;
+}
+
+.name-calorie-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal h2 {
+    margin: 0 0 15px 0;
+    color: #333;
+}
+
+.modal p {
+    margin: 0 0 20px 0;
+    color: #666;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.modal-buttons button {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+#confirmLogin {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#confirmLogin:hover {
+    background-color: #45a049;
+}
+
+#cancelLogin {
+    background-color: #f44336;
+    color: white;
+}
+
+#cancelLogin:hover {
+    background-color: #da190b;
+}
+
+/* Reset Confirmation Modal Styles */
+#resetConfirmModal .modal-content {
+    width: 350px;
+}
+
+#resetConfirmModal p {
+    color: #666;
+    margin: 15px 0 20px;
+    font-size: 16px;
+}
+
+#confirmReset {
+    background-color: #f44336;
+    color: white;
+}
+
+#confirmReset:hover {
+    background-color: #da190b;
+}
+
+#cancelReset {
+    background-color: #e0e0e0;
+    color: #666;
+}
+
+#cancelReset:hover {
+    background-color: #d0d0d0;
+}
+
+/* Auto Menu Modal */
+.auto-menu-modal {
+    padding: 30px 20px 20px 20px !important;
+    width: 700px !important;
+    max-width: 98vw;
+    text-align: center;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 8px 32px rgba(60,80,60,0.18), 0 1.5px 8px rgba(60,80,60,0.10);
+}
+
+.auto-menu-modal h2 {
+    color: #388e3c;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.auto-menu-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    justify-items: center;
+    align-items: start;
+    margin-top: 20px;
+    max-height: 480px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.auto-menu-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    width: 160px;
+    padding: 16px 10px 10px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: box-shadow 0.2s, transform 0.2s;
+    cursor: pointer;
+    border: 2px solid #D7F998;
+}
+
+.auto-menu-card:hover {
+    box-shadow: 0 4px 16px rgba(60,160,60,0.13);
+    border-color: #A5E135;
+    transform: translateY(-2px) scale(1.03);
+}
+
+.auto-menu-card img {
+    width: 120px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px #e0e0e0;
+}
+
+.auto-menu-card div {
+    margin-top: 12px;
+    font-size: 1.08rem;
+    font-weight: 600;
+    color: #388e3c;
+    text-align: center;
+}
+
+.modal-buttons {
+    margin-top: 30px;
+}
+
+#closeAutoMenuModal {
+    background: #f44336;
+    color: white;
+}
+
+#confirmAutoMenuModal .modal-buttons button {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s, box-shadow 0.2s, transform 0.15s;
+    min-width: 100px;
+    margin: 0 5px;
+}
+#confirmAutoMenuBtn {
+    background-color: #4CAF50;
+    color: white;
+}
+#confirmAutoMenuBtn:hover {
+    background-color: #388e3c;
+    box-shadow: 0 4px 16px rgba(60,160,60,0.13);
+    transform: translateY(-2px) scale(1.04);
+}
+#cancelAutoMenuBtn {
+    background-color: #f44336;
+    color: white;
+}
+#cancelAutoMenuBtn:hover {
+    background-color: #da190b;
+    box-shadow: 0 4px 16px rgba(220,60,60,0.13);
+    transform: translateY(-2px) scale(1.04);
+}
+
+  
+  
+  

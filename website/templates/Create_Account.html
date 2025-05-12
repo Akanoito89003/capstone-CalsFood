@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Layout_Logout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Create_Account.css') }}">
+    <title>Create Account - CalsFood</title>
+    <style>
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 4px;
+        }
+        .input-box input.is-invalid,
+        .input-box select.is-invalid,
+        .input-box textarea.is-invalid {
+            border-color: red;
+        }
+        .gender-selection.is-invalid + .error-message {
+            display: block; /* Make gender error visible */
+        }
+    </style>
+</head>
+<body>
+    <div class="topic">
+        <div class="name">
+            <h1>CalsFood</h1>
+            <h4>เว็บไซต์คำนวนแคลลอรี่อาหารตามสั่งไทย</h4>
+        </div>
+        <img src="{{ url_for('static', filename='Image/BG-topic.webp') }}">
+    </div>
+
+    <div class="menu-bar">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='Image/logo.webp') }}">
+            <h2>CalsFood</h2>
+        </div>
+
+        {%if user.is_authenticated %}
+        <a class="button" id="Home_Login" href="/">Home</a> 
+        <a class="button" id="Design" href="/design">Design</a>
+        <a class="button" id="AI" href="/ai-test">AI</a>
+        <a class="button" id="Inventory" href="/inventory">Inventory</a>
+        {% else %}
+        {# ถ้าuser ยังไม่ได้มีการ login เมื่อกดหน้าอื่น ให้มันไปแสดงที่หน้า Signin หรือ Login #}
+        <a class="button" id="Home_Logout" href="/">Home</a>
+        <a class="button" id="Design" href="/design">Design</a>
+        <a class="button" id="AI" href="/ai-test">AI</a>
+        <a class="button" id="Inventory" href="/inventory">Inventory</a>
+        {% endif %}
+    </div>
+
+    <div class="background">
+        <img src="https://images.pexels.com/photos/349609/pexels-photo-349609.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="">
+    </div>
+
+    <div class="create-account">
+        <div class="create-box">
+            <div class="design">
+                <div class="box">
+                    <div class="box1"></div>
+                    <div class="box2"></div>
+                    <div class="radius1"></div>
+                    <div class="radius2"></div>
+                </div>
+                <div class="box">
+                    <p>Create Account</p>
+                </div>
+                <div class="box">
+                    <div class="box3"></div>
+                    <div class="box4"></div>
+                    <div class="radius3"></div>
+                    <div class="radius4"></div>
+                </div>
+            </div>
+
+            <form method="POST" action="{{ url_for('auth.signup') }}" class="form-create" id="signupForm" novalidate>
+                {# Display general flash messages (like success or critical errors) #}
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <div class="username">
+                    <label for="create-username">Username</label> {# Added for attribute #}
+                    <div class="input-box">
+                        <input 
+                            type="text"
+                            class="form-control {% if errors.username %}is-invalid{% endif %}" {# Add is-invalid class if error #}
+                            id="create-username" 
+                            placeholder="Username" 
+                            name="Username"
+                            value="{{ form_data.get('Username', '') }}" {# Repopulate value #}
+                            minlength="2"
+                            required>
+                        <div class="error-message" id="username-error">{{ errors.get('username', '') }}</div> {# Display backend error #}
+                    </div>
+                </div>
+
+                <div class="flex-container-row">
+                    <div class="flex-item">
+                        <label for="create-height">Height (cm)</label> {# Added for attribute #}
+                        <div class="input-box">
+                            <input 
+                                type="number" 
+                                class="form-control {% if errors.height %}is-invalid{% endif %}"
+                                id="create-height" 
+                                placeholder="Height" 
+                                min="1" 
+                                step="0.1"
+                                name="user_height"
+                                value="{{ form_data.get('user_height', '') }}"
+                                required>
+                            <div class="error-message" id="height-error">{{ errors.get('height', '') }}</div>
+                        </div>
+                    </div>
+                    <div class="flex-item">
+                        <label for="create-weight">Weight (kg)</label> {# Added for attribute #}
+                        <div class="input-box">
+                            <input 
+                                type="number" 
+                                class="form-control {% if errors.weight %}is-invalid{% endif %}"
+                                id="create-weight" 
+                                placeholder="Weight" 
+                                min="1" 
+                                step="0.1"
+                                name="user_weight"
+                                value="{{ form_data.get('user_weight', '') }}"
+                                required>
+                            <div class="error-message" id="weight-error">{{ errors.get('weight', '') }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex-container">
+                    <div class="flex-item">
+                        <label for="create-birthday">Birthday</label> {# Added for attribute #}
+                        <div class="input-box">
+                            <input 
+                                type="date" 
+                                class="form-control {% if errors.birthday %}is-invalid{% endif %}"
+                                id="create-birthday" 
+                                name="user_birthday"
+                                value="{{ form_data.get('user_birthday', '') }}"
+                                max="{{ today }}"
+                                required>
+                            <div class="error-message" id="birthday-error">{{ errors.get('birthday', '') }}</div>
+                        </div>
+                    </div>
+                    <div class="flex-item">
+                        <label>Gender</label>
+                        <div class="gender-selection {% if errors.gender %}is-invalid{% endif %}">
+                            <div class="gender-option">
+                                <input 
+                                    type="radio" 
+                                    class="form-control"
+                                    id="male" 
+                                    name="user_gender" 
+                                    value="male" 
+                                    {% if form_data.get('user_gender') == 'male' %}checked{% endif %} {# Repopulate checked #}
+                                    required>
+                                <label for="male">Male</label>
+                            </div>
+                            <div class="gender-option">
+                                <input 
+                                    type="radio" 
+                                    class="form-control"
+                                    id="female" 
+                                    name="user_gender" 
+                                    value="female"
+                                    {% if form_data.get('user_gender') == 'female' %}checked{% endif %} {# Repopulate checked #}
+                                    required>
+                                <label for="female">Female</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="gender-error">{{ errors.get('gender', '') }}</div>
+                    </div>
+                </div>
+
+                <div class="email">
+                    <label for="create-email">Email</label> {# Added for attribute #}
+                    <div class="input-box">
+                        <input 
+                            type="email" 
+                            class="form-control {% if errors.email %}is-invalid{% endif %}"
+                            id="create-email" 
+                            placeholder="Email" 
+                            name="email"
+                            value="{{ form_data.get('email', '') }}"
+                            required>
+                        <div class="error-message" id="email-error">{{ errors.get('email', '') }}</div>
+                    </div>
+                </div>
+
+                <div class="password">
+                    <label for="create-password">Password</label> {# Added for attribute #}
+                    <div class="input-box">
+                        <input 
+                            type="password" 
+                            class="form-control {% if errors.password %}is-invalid{% endif %}"
+                            id="create-password" 
+                            placeholder="Password" 
+                            name="password1"
+                            minlength="7"
+                            required>
+                        <img src="https://cdn-icons-png.flaticon.com/512/2767/2767146.png" id="togglePassword" class="toggle-password" alt="Show Password">
+                        <div class="error-message" id="password-error">{{ errors.get('password', '') }}</div>
+                    </div>
+                </div>
+
+                <div class="password">
+                    <label for="create-confirm-password">Confirm Password</label> {# Added for attribute #}
+                    <div class="input-box">
+                        <input 
+                            type="password" 
+                            class="form-control {% if errors.confirm_password %}is-invalid{% endif %}"
+                            id="create-confirm-password" 
+                            placeholder="Confirm Password" 
+                            name="password2"
+                            minlength="7"
+                            required>
+                        <img src="https://cdn-icons-png.flaticon.com/512/2767/2767146.png" id="toggleConfirmPassword" class="toggle-password" alt="Show Password">
+                        <div class="error-message" id="confirm-password-error">{{ errors.get('confirm_password', '') }}</div>
+                    </div>
+                </div>
+
+                <button class="create-button" type="submit">Create Account</button>
+                <a href="{{ url_for('auth.login') }}" class="create-account-link">Already have an account?</a>
+            </form>      
+        </div>
+    </div>
+
+    <script>
+        // Get today's date for max birthday
+        try {
+             document.getElementById('create-birthday').max = new Date().toISOString().split('T')[0];
+        } catch (e) {
+             console.error("Could not set max date for birthday input.");
+        }
+       
+        // Password visibility toggle (Keep this JS)
+        const togglePassword = document.querySelector('#togglePassword');
+        const toggleConfirmPassword = document.querySelector('#toggleConfirmPassword');
+        const password = document.querySelector('#create-password');
+        const confirmPassword = document.querySelector('#create-confirm-password');
+
+        if (togglePassword && password) {
+            togglePassword.addEventListener('click', function() {
+                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                password.setAttribute('type', type);
+                this.src = type === 'password' ? 
+                    'https://cdn-icons-png.flaticon.com/512/2767/2767146.png' : 
+                    'https://cdn-icons-png.flaticon.com/512/709/709612.png';
+            });
+        }
+
+        if (toggleConfirmPassword && confirmPassword) {
+            toggleConfirmPassword.addEventListener('click', function() {
+                const type = confirmPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+                confirmPassword.setAttribute('type', type);
+                this.src = type === 'password' ? 
+                    'https://cdn-icons-png.flaticon.com/512/2767/2767146.png' : 
+                    'https://cdn-icons-png.flaticon.com/512/709/709612.png';
+            });
+        }
+
+        // Client-side validation (Optional but recommended for better UX)
+        // Remove or comment out the client-side validation part if you ONLY want server-side errors
+        // const form = document.getElementById('signupForm');
+        // if (form) {
+        //     form.addEventListener('submit', function(event) {
+        //         let isValid = true;
+                
+        //         // Clear previous backend errors shown by client-side validation
+        //         document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+                
+        //         // Validate email
+        //         const email = document.getElementById('create-email');
+        //         const emailError = document.getElementById('email-error');
+        //         if (!email.value || !email.value.includes('@') || !email.value.includes('.')) {
+        //             emailError.textContent = 'Please enter a valid email address';
+        //             email.classList.add('is-invalid');
+        //             isValid = false;
+        //         } else {
+        //             email.classList.remove('is-invalid');
+        //         }
+
+        //         // ... (add similar client-side validation for other fields) ...
+
+        //         // Validate password match
+        //         const passwordInput = document.getElementById('create-password');
+        //         const confirmPasswordInput = document.getElementById('create-confirm-password');
+        //         const confirmPasswordError = document.getElementById('confirm-password-error');
+        //         if (passwordInput.value !== confirmPasswordInput.value) {
+        //             confirmPasswordError.textContent = 'Passwords do not match';
+        //             confirmPasswordInput.classList.add('is-invalid');
+        //             isValid = false;
+        //         } else {
+        //             confirmPasswordInput.classList.remove('is-invalid');
+        //         }
+
+        //         if (!isValid) {
+        //             event.preventDefault(); // Prevent form submission if client-side validation fails
+        //         }
+        //     });
+        // }
+    </script>
+</body>
+</html>

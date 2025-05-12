@@ -1,0 +1,429 @@
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.background img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.3;
+}
+
+.content {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin-top: 150px;
+    padding: 0;
+    position: relative;
+    justify-content: center;
+}
+
+.food-analyzer {
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.food-analyzer h1 {
+    color: #333;
+}
+
+.analyzer-box {
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 10px 4px rgba(0, 0, 0, 0.1);
+    border-top: 10px solid #313131;
+}
+
+.result-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.food-info {
+    text-align: left;
+}
+
+.food-info h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.food-image {
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.food-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.calories-info {
+    text-align: left;
+}
+
+.calories-info h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.ingredient-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.ingredient-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.ingredient-name {
+    width: 100px;
+    font-size: 1rem;
+    color: #333;
+}
+
+.calorie-bar {
+    flex-grow: 1;
+    height: 20px;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    background-color: #27ae60 !important;
+    border-radius: 10px;
+    transition: width 0.5s;
+}
+
+.calorie-value {
+    width: 80px;
+    text-align: right;
+    font-size: 1rem;
+    color: #333;
+}
+
+.total-calories {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 2px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.total-value {
+    color: #666;
+}
+
+.upload-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.upload-icon {
+    width: 100px;
+    height: 100px;
+}
+
+.btn-container {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-group {
+    display: flex;
+    gap: 1rem;
+}
+
+.upload-btn, .edit-btn, .save-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+}
+
+.upload-btn:hover, .edit-btn:hover, .save-btn:hover {
+    transform: translateY(-2px);
+}
+
+.upload-btn {
+    background-color: #666;
+    color: white;
+}
+
+.upload-btn:hover {
+    background-color: #3d3d3d;
+}
+
+.edit-btn {
+    background-color: #4a90e2;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #357abd;
+}
+
+.save-btn {
+    background-color: #27ae60;
+    color: white;
+}
+
+.save-btn:hover {
+    background-color: #219a52;
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.modal.show {
+    opacity: 1;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 15px;
+    width: 400px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transform: translateY(-50px);
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+}
+
+.modal.show .modal-content {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.modal h2 {
+    margin: 0 0 20px 0;
+    color: #333;
+    font-size: 24px;
+    text-align: center;
+}
+
+.modal-form {
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.fixed-food-name {
+    font-size: 16px;
+    color: #333;
+    padding: 12px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    margin: 0;
+    border: 1px solid #eee;
+}
+
+.form-group select,
+.form-group input[type="datetime-local"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* Specific styles for datetime-local to match select width */
+.form-group input[type="datetime-local"] {
+    min-height: 41px; /* Match the height of select element */
+}
+
+/* Add a custom arrow for select */
+.form-group select {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 1em;
+    padding-right: 40px;
+}
+
+.form-group select:focus,
+.form-group input[type="datetime-local"]:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.modal-buttons button {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    transition: background-color 0.3s, transform 0.1s;
+    min-width: 120px;
+}
+
+#confirmSave {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#confirmSave:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
+
+#cancelSave {
+    background-color: #f44336;
+    color: white;
+}
+
+#cancelSave:hover {
+    background-color: #da190b;
+    transform: translateY(-2px);
+}
+
+/* Success Modal Styles */
+.success-modal {
+    padding: 30px !important;
+    width: 300px !important;
+    text-align: center;
+    animation: modalPopIn 0.3s ease-out;
+}
+
+.success-icon {
+    font-size: 48px;
+    color: #4CAF50;
+    margin-bottom: 20px;
+    animation: iconScale 0.5s ease-out;
+    background-color: rgba(76, 175, 80, 0.1);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+@keyframes modalPopIn {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes iconScale {
+    0% {
+        transform: scale(0);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.success-modal h2 {
+    color: #333;
+    margin: 0;
+    font-size: 24px;
+}
+
+#editIngredientsModal .modal-buttons button {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    transition: background-color 0.3s, transform 0.1s;
+    min-width: 120px;
+}
+#confirmEditIngredients {
+    background-color: #27ae60;
+    color: white;
+}
+#confirmEditIngredients:hover {
+    background-color: #219a52;
+    transform: translateY(-2px) scale(1.05);
+}
+#cancelEditIngredients {
+    background-color: #f44336;
+    color: white;
+}
+#cancelEditIngredients:hover {
+    background-color: #da190b;
+    transform: translateY(-2px) scale(1.05);
+}

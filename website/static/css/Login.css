@@ -1,0 +1,267 @@
+/******************************** login/design ***********************************/
+.login {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    margin-top: 170px;
+    margin-bottom: 100px;
+}
+
+.login p {
+    margin: 0;
+}
+
+.login-box {
+    background-color: #ffffff;
+    width: 400px;
+    min-height: 400px;
+    height: auto;
+    box-shadow: inset 0 0 12px #757575;
+    border-radius: 10px;
+    margin-top: 30px;
+}
+
+.login-box p {
+    font-size: xx-large;
+    margin-top: 40px;
+}
+
+.design {
+    display: flex;
+    justify-content: space-between;
+}
+
+.box {
+    text-align: center;
+    border-radius: 10px;
+    font-size: 20px;
+}
+
+.box p {
+    margin-left: -50px;
+}
+
+.box1 {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px 0 40px;
+    background-color: #39592D;
+    box-shadow: inset 0 0 40px #A5E135;
+    z-index: 1;
+
+
+}
+
+.box2 {
+    margin-top: -40px;
+    width: 50px;
+    height: 50px;
+    border-radius: 10px 0 40px;
+    background-color: #39592D;
+    box-shadow: inset 0 0 60px #A5E135;
+    z-index: 2;
+}
+
+.box3 {
+    width: 80px;
+    height: 80px;
+    border-radius: 0 10px 0 40px;
+    background-color: #39592D;
+    box-shadow: inset 0 0 40px #A5E135;
+    z-index: 1;
+}
+
+.box4 {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -40px;
+    width: 50px;
+    height: 50px;
+    border-radius: 0 10px 0 40px;
+    background-color: #39592D;
+    box-shadow: inset 0 0 60px #A5E135;
+    z-index: 2;
+    margin-left: 30px;
+}
+
+.radius1 {
+    width: 30px;
+    height: 30px;
+    border-radius: 80px;
+    background-color: #A5E135;
+    margin-left: 90px;
+    margin-top: -80px;
+}
+
+.radius2 {
+    width: 12px;
+    height: 12px;
+    border-radius: 80px;
+    background-color: #A5E135;
+    margin-left: 85px;
+}
+
+.radius3 {
+    width: 30px;
+    height: 30px;
+    border-radius: 80px;
+    background-color: #A5E135;
+    margin-left: -40px;
+    margin-top: -80px;
+}
+
+.radius4 {
+    width: 12px;
+    height: 12px;
+    border-radius: 80px;
+    background-color: #A5E135;
+    margin-left: -17px;
+}
+
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.background img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.3;
+}
+
+/******************************** form ***********************************/
+form {
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
+
+label {
+    font-size: large;
+    margin-left: 40px;
+}
+
+.input-box {
+    position: relative;
+    width: 320px;
+    margin: 10px 40px 10px;
+}
+
+.input-box input {
+    width: 100%;
+    height: 30px;
+    border: none;
+    border-bottom: 2px solid #cacaca;
+    outline: none;
+
+}
+
+.toggle-password {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.toggle-password:hover {
+    opacity: 1;
+}
+
+input:focus {
+    border-bottom: 2px solid #99d626; /* เปลี่ยนสีเมื่อโฟกัส */
+}
+
+.sign-in {
+    width: 320px;
+    height: 40px;
+    color: white;
+    font-size: smaller;
+    background-color: #1E8011;
+    border-radius: 30px;
+    margin-left: 40px;
+    margin-top: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.sign-in:hover {
+    background-color: #15600d;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.create-account-link {
+    display: block;
+    text-align: center;
+    font-size: small;
+    margin-top: 15px;
+    color: #0066cc;
+    text-decoration: underline;
+}
+
+.create-account-link:hover {
+    color: #004d99;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 40px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: medium;
+}
+
+.remember-me input[type="checkbox"] {
+    accent-color: #99d626;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    margin: 0;
+}
+
+.remember-me label {
+    margin: 0;
+    cursor: pointer;
+    color: #333;
+    font-size: medium;
+    user-select: none;
+    transition: color 0.2s;
+}
+
+.remember-me input[type="checkbox"]:focus + label {
+    color: #99d626;
+}
+
+.error-message {
+    color: #ff0000;
+    font-size: 14px;
+    margin-left: 40px;
+    margin-top: 5px;
+    display: none;
+}
+
+.error-message.show {
+    display: block;
+}
+
+.input-box input.error {
+    border-bottom: 2px solid #ff0000;
+}
+
+
+
+
+
+

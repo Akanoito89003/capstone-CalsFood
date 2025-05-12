@@ -1,0 +1,274 @@
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.background img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.3;
+}
+
+.content {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin-top: 150px;
+    padding: 0;
+    position: relative;
+    justify-content: center;
+}
+
+.food-analyzer {
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.food-analyzer h1 {
+    color: #333;
+    margin-bottom: 2rem;
+}
+
+.analyzer-box {
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 10px 4px rgba(0, 0, 0, 0.1);
+    border-top: 10px solid #313131;
+}
+
+.result-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.food-info {
+    text-align: left;
+}
+
+.food-info h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.food-image {
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.food-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.calories-info {
+    text-align: left;
+}
+
+.calories-info h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.ingredient-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.ingredient-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.ingredient-name {
+    width: 100px;
+    font-size: 1rem;
+    color: #333;
+}
+
+.calorie-bar {
+    flex-grow: 1;
+    height: 20px;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    width: 75%;
+    height: 100%;
+    background-color: #666;
+    border-radius: 10px;
+}
+
+.calorie-value {
+    width: 80px;
+    text-align: right;
+    font-size: 1rem;
+    color: #333;
+}
+
+.total-calories {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 2px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.total-value {
+    color: #666;
+}
+
+.upload-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.upload-icon {
+    width: 100px;
+    height: 100px;
+}
+
+.btn-container {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-group {
+    display: flex;
+    gap: 1rem;
+}
+
+.upload-btn, .edit-btn, .save-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+}
+
+.upload-btn:hover, .edit-btn:hover, .save-btn:hover {
+    transform: translateY(-2px);
+}
+
+.upload-btn {
+    background-color: #666;
+    color: white;
+}
+
+.upload-btn:hover {
+    background-color: #3d3d3d;
+}
+
+.edit-btn {
+    background-color: #4a90e2;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #357abd;
+}
+
+.save-btn {
+    background-color: #27ae60;
+    color: white;
+}
+
+.save-btn:hover {
+    background-color: #219a52;
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal h2 {
+    margin: 0 0 15px 0;
+    color: #333;
+}
+
+.modal p {
+    margin: 0 0 20px 0;
+    color: #666;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.modal-buttons button {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+#confirmLogin {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#confirmLogin:hover {
+    background-color: #45a049;
+}
+
+#cancelLogin {
+    background-color: #f44336;
+    color: white;
+}
+
+#cancelLogin:hover {
+    background-color: #da190b;
+}

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Layout_Logout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Design_Logout.css') }}">
+    <title>Design</title>
+</head>
+<body>
+    <div class="topic">
+        <div class="name">
+            <h1>CalsFood</h1>
+            <h4>เว็บไซต์คำนวนแคลลอรี่อาหารตามสั่งไทย</h4>
+        </div>
+        <img src="{{ url_for('static', filename='Image/BG-topic.webp') }}">
+    </div>
+
+    <div class="menu-bar">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='Image/logo.webp') }}">
+            <h2>CalsFood</h2>
+        </div>
+
+        {%if user.is_authenticated %}
+        <a class="button" id="Home_Login" href="/">Home</a> 
+        <a class="button" id="Design" href="/design">Design</a>
+        <a class="button" id="AI" href="/ai-test">AI</a>
+        <a class="button" id="Inventory" href="/inventory">Inventory</a>
+        {% else %}
+        {# ถ้าuser ยังไม่ได้มีการ login เมื่อกดหน้าอื่น ให้มันไปแสดงที่หน้า Signin หรือ Login #}
+        <a class="button" id="Home_Logout" href="/">Home</a>
+        <a class="button" id="Design" href="/design">Design</a>
+        <a class="button" id="AI" href="/ai-test">AI</a>
+        <a class="button" id="Inventory" href="/inventory">Inventory</a>
+        {% endif %}
+
+        <div class="account">
+            <img id="icon-profile" src="{{ url_for('static', filename='Image/icon-profile.png') }}">
+            <a href="{{ url_for('auth.login') }}">Sign in</a>
+        </div>
+    </div>
+
+    <div class="background">
+        <img src="https://images.pexels.com/photos/349609/pexels-photo-349609.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="">
+    </div>
+
+    <div class="content">
+        <button id="sidebar-toggle" class="sidebar-toggle-btn">◀</button>
+        <div class="left-content">
+            <div class="design">
+                <div class="ingredients">
+                    {% for category in categories %}
+                    <div class="ingredient-category">
+                        <div class="category-header">
+                            <span class="toggle-btn">▶</span>  
+                            <span>{{ category.category_name }}</span>
+                        </div>
+                        <div class="ingredient-items">
+                            <!-- Ingredients will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    {% endfor %}
+            
+                    <div class="buttons">
+                        <button class="reset-button">Reset</button>
+                        <button class="auto-menu-button">จัดเมนูอัตโนมัติ</button>
+                    </div>
+                    <div class="buttons">
+                        <button class="save-button" onclick="window.location.href='{{ url_for('auth.login') }}'">บันทึก</button>
+                    </div>
+                </div>
+                <div class="spacer"></div>
+                <div class="sum_calorie">
+                    <p>ผลรวม: 0 Calorie</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-content">
+            <div class="fixed-header">
+                <div class="type">
+                    <h1></h1>   
+                </div> 
+
+                <div class="type-ingredient">
+                    <div class="buttons-container">
+                        <!-- Buttons will be populated by JavaScript -->
+                    </div>
+            
+                    <div class="search-bar">
+                        <img src="https://cdn-icons-png.flaticon.com/512/711/711319.png" alt="ค้นหา" class="search-icon">
+                        <input type="text" id="ingredientSearch" placeholder="ค้นหา">
+                    </div>
+                </div>
+            </div>
+
+            <div class="scrollable-content">
+                <div class="total-ingredients">
+                    <div class="sum-ingredients">
+                        {% for category in categories %}
+                            {% for ingredient in ingredients_by_category[category.category_name] %}
+                            <div class="box" data-category="{{ ingredient.category.category_name }}" data-main-category="{{ category.category_name }}">
+                                <img src="{{ url_for('static', filename='ingredients/' + ingredient.ingredient_photo) }}">
+                                <h1>{{ ingredient.ingredient_name }}</h1>
+                                <p>ปริมาณ: {{ ingredient.ingredient_value }}</p>
+                                <p>พลังงาน: {{ ingredient.ingredient_calories }}</p>
+                                <button>+Add</button>
+                            </div>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add modal dialog before closing body tag -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h2>แจ้งเตือน</h2>
+            <p>กรุณาเข้าสู่ระบบก่อน</p>
+            <div class="modal-buttons">
+                <button id="confirmLogin">ยืนยัน</button>
+                <button id="cancelLogin">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add reset confirmation modal -->
+    <div id="resetConfirmModal" class="modal">
+        <div class="modal-content">
+            <h2>ยืนยันการรีเซ็ต</h2>
+            <p>คุณต้องการรีเซ็ตรายการอาหารทั้งหมดใช่หรือไม่?</p>
+            <div class="modal-buttons">
+                <button id="confirmReset">ยืนยัน</button>
+                <button id="cancelReset">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal สำหรับแสดงเมนูอัตโนมัติ -->
+    <div id="autoMenuModal" class="modal">
+        <div class="modal-content auto-menu-modal">
+            <h2>เลือกเมนูอัตโนมัติ</h2>
+            <div class="auto-menu-list">
+                <!-- JS จะเติมเมนูอัตโนมัติที่นี่ -->
+            </div>
+            <div class="modal-buttons">
+                <button id="closeAutoMenuModal">ปิด</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal ยืนยันการจัดวัตถุดิบตามเมนูอัตโนมัติ -->
+    <div id="confirmAutoMenuModal" class="modal">
+      <div class="modal-content">
+        <h2 id="confirmAutoMenuTitle"></h2>
+        <p>ต้องการจัดวัตถุดิบตามเมนูนี้หรือไม่?</p>
+        <div class="modal-buttons">
+          <button id="confirmAutoMenuBtn">ยืนยัน</button>
+          <button id="cancelAutoMenuBtn">ยกเลิก</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/Design_Logout.js') }}"></script>
+</body>
+</html>

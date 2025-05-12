@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Layout_Login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Inventory_Login.css') }}">
+    <title>My Menu Management</title>
+</head>
+<body>
+   
+    <input type="hidden" id="current-user-id" value="{{ user.user_id }}">
+
+
+    <div class="topic">
+        <div class="name">
+            <h1>CalsFood</h1>
+            <h4>เว็บไซต์คำนวนแคลลอรี่อาหารตามสั่งไทย</h4>
+        </div>
+        <img src="{{ url_for('static', filename='Image/BG-topic.webp') }}">
+    </div>
+
+    <div class="menu-bar">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='Image/logo.webp') }}">
+            <h2>CalsFood</h2>
+        </div>
+
+        <a href="{{ url_for('views.home') }}" class="button">Home</a>
+        <a href="{{ url_for('views.add_menu') }}" class="button">Design</a>
+        <a href="{{ url_for('views.ai_test') }}" class="button">AI</a>
+        <a href="{{ url_for('views.inventory') }}" class="button">Inventory</a>
+
+        {%if user.is_authenticated %}
+        <div class="account" data-profile-url="{{ url_for('views.profile') }}" data-logout-url="{{ url_for('auth.logout') }}">
+            {% if user.profile_image %}
+                <img id="icon-profile" src="{{ url_for('static', filename='profile_pics/' + user.profile_image) }}" alt="Profile Picture">
+            {% else %}
+                <img id="icon-profile" src="{{ url_for('static', filename='Image/icon-profile.png') }}" alt="Default Profile">
+            {% endif %}
+            <p>{{ user.Username }}</p>
+            <img id="setting" src="{{ url_for('static', filename='Image/icon-Hamburger.png') }}">
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="background">
+        <img src="https://images.pexels.com/photos/349609/pexels-photo-349609.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="">
+    </div>
+
+    <div class="content">
+        <button id="sidebar-toggle" class="sidebar-toggle-btn">◀</button>
+        <div class="left-content">
+            <div class="menu-categories">
+                <div class="category-list">
+                    <div class="category-item">
+                        <div class="category-header">
+                            <img src="https://cdn-icons-png.flaticon.com/512/18907/18907118.png" alt="My Menu" class="category-icon">
+                            <span>เมนูอาหารของฉัน</span>
+                        </div>
+                    </div>
+                
+                    <div class="category-item">
+                        <div class="category-header">
+                            <img src="   https://cdn-icons-png.flaticon.com/512/4257/4257212.png " alt="Daily Meal" class="category-icon">
+                            <span>มื้ออาหารของฉัน</span>
+                        </div>
+                    </div>
+
+                    <div class="category-item">
+                        <div class="category-header">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3023/3023682.png" alt="My Healthy" class="category-icon">
+                            <span>สุขภาพของฉัน</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-content">
+            <div class="fixed-header">
+                <div class="section-title">
+                    <h1></h1>   
+                </div>
+
+                <div class="filter-section">
+                    <div class="filter-buttons">
+                    </div>
+            
+                    <div class="search-bar">
+                        <img src="https://cdn-icons-png.flaticon.com/512/711/711319.png" alt="ค้นหา" class="search-icon">
+                        <input type="text" placeholder="ค้นหาชื่อเมนูอาหาร">
+                    </div>
+                </div>
+            </div>
+            <div class="add-button-container">
+                <a href="{{ url_for('views.add_menu') }}">
+                <button class="add-menu-btn">
+                    <img src="https://cdn-icons-png.flaticon.com/512/4315/4315609.png" alt="Add">
+                    <span>เพิ่มเมนูอาหาร</span>
+                </button>
+                </a>
+            </div>
+            <div class="add-daily-meal-container">
+                <button class="add-daily-meal-btn">
+                    <img src="https://cdn-icons-png.flaticon.com/512/4315/4315609.png" alt="Add">
+                    <span>เพิ่มมื้ออาหาร</span>
+                </button>
+            </div>
+            <div class="scrollable-content">
+                <div class="menu-container">
+                    {% if mymenus %}
+                        <div class="menu-grid">
+                            {% for menu in mymenus %}
+                            <div class="menu-card" data-menu-id="{{ menu.mymenu_id }}" data-created="{{ menu.mymenu_createdate }}">
+                                <div class="menu-card-header">
+                                    <div class="menu-info">
+                                        <h3 class="menu-name">{{ menu.mymenu_name }}</h3>
+                                        <p class="menu-date">{{ menu.mymenu_createdate.strftime('%Y-%m-%d') }}</p>
+                                    </div>
+                                    <button class="delete-menu-btn" data-menu-id="{{ menu.mymenu_id }}">
+                                        <img src="{{ url_for('static', filename='Image/bin.png') }}" alt="Delete">
+                                    </button>
+                                </div>
+                                <div class="menu-card-footer">
+                                    <div class="calorie-info">
+                                        <span class="calorie-value">{{ menu.mymenu_calorie }}</span>
+                                        <span class="calorie-unit">kcal</span>
+                                    </div>
+                                    <button class="view-details-btn" data-menu-id="{{ menu.mymenu_id }}">View Details</button>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="no-my-menu-message">ขณะนี้ยังไม่มีเมนูที่บันทึกไว้</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="daily-meal-content">
+                <div class="no-daily-meal-message">ขณะนี้ยังไม่มีรายการมื้ออาหาร</div>
+            </div>
+
+            <div class="healthy-content">
+                <!-- Add hidden user data elements -->
+                <div style="display: none;">
+                    <span class="user-weight">{{ user.user_weight }}</span>
+                    <span class="user-height">{{ user.user_height }}</span>
+                    <span class="user-birthday">{{ user_birthday }}</span>
+                    <span class="user-gender">{{ user.user_gender }}</span>
+                </div>
+                <div class="bmi-card">
+                    <div class="bmi-header">
+                        <h2>ค่าดัชนีมวลกาย (BMI)</h2>
+                    </div>
+                    <div class="bmi-info">
+                        <div class="bmi-value">
+                            <span class="value">{% if bmi %}{{ bmi }}{% else %}--{% endif %}</span>
+                            <span class="unit">kg/m²</span>
+                        </div>
+                        <div class="bmi-status">
+                            {% if bmi_status %}
+                                {% if bmi_status == "underweight" %}
+                                    <span class="status underweight">น้ำหนักน้อย</span>
+                                {% elif bmi_status == "normal" %}
+                                    <span class="status normal">รูปร่างสมส่วน</span>
+                                {% elif bmi_status == "overweight" %}
+                                    <span class="status overweight">ภาวะน้ำหนักเกิน</span>
+                                {% else %}
+                                    <span class="status obese">โรคอ้วน</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="status">กรุณากรอกข้อมูลส่วนสูงและน้ำหนัก</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="bmi-range">
+                        <div class="range-bar">
+                            <div class="range underweight">น้ำหนักน้อย</div>
+                            <div class="range normal">น้ำหนักปกติ</div>
+                            <div class="range overweight">น้ำหนักเกิน</div>
+                            <div class="range obese">โรคอ้วน</div>
+                        </div>
+                        <div class="range-values">
+                            <span>-17</span>
+                            <span>18.5</span>
+                            <span>23</span>
+                            <span>25</span>
+                            <span>30+</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tdee-card">
+                    <div class="tdee-header">
+                        <h2>พลังงานที่ควรได้รับต่อวัน (TDEE)</h2>
+                    </div>
+                    <div class="tdee-result">
+                        <div class="calorie-range">
+                            <div class="range-item">
+                                <span class="label">พลังงานขั้นต่ำ:</span>
+                                <span class="value">0</span>
+                                <span class="unit">kcal</span>
+                            </div>
+                            <div class="range-item">
+                                <span class="label">พลังงานสูงสุด:</span>
+                                <span class="value">0</span>
+                                <span class="unit">kcal</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="activity-level">
+                        <h3>ระดับการออกกำลังกาย</h3>
+                        <div class="activity-options">
+                            <button class="activity-btn" data-multiplier="1.2">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2936/2936886.png" alt="Sedentary">
+                                <span>ไม่ออกกำลังกาย</span>
+                            </button>
+                            <button class="activity-btn" data-multiplier="1.375">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2936/2936886.png" alt="Light">
+                                <span>ออกกำลังกายน้อย</span>
+                            </button>
+                            <button class="activity-btn" data-multiplier="1.55">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2936/2936886.png" alt="Moderate">
+                                <span>ออกกำลังกายปานกลาง</span>
+                            </button>
+                            <button class="activity-btn" data-multiplier="1.725">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2936/2936886.png" alt="Active">
+                                <span>ออกกำลังกายมาก</span>
+                            </button>
+                            <button class="activity-btn" data-multiplier="1.9">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2936/2936886.png" alt="Very Active">
+                                <span>ออกกำลังกายมากที่สุด</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete confirmation modal -->
+    <div id="deleteConfirmModal" class="modal">
+        <div class="modal-content">
+            <h2>ยืนยันการลบเมนู</h2>
+            <p>คุณต้องการลบเมนู "<span id="deleteMenuName"></span>" ใช่หรือไม่?</p>
+            <div class="modal-buttons">
+                <button id="confirmDelete" class="delete-btn">ยืนยัน</button>
+                <button id="cancelDelete" class="cancel-btn">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success modal -->
+    <div id="deleteSuccessModal" class="modal">
+        <div class="modal-content success-modal">
+            <div class="success-icon">✓</div>
+            <h2>ลบเมนูสำเร็จ</h2>
+            <div class="modal-buttons">
+                <button id="closeSuccess" class="confirm-btn">ตกลง</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Daily Meal Modal -->
+    <div id="editDailyMealModal" class="modal">
+        <div class="modal-content edit-modal">
+            <div class="modal-header">
+                <h2>แก้ไขมื้ออาหารของฉัน</h2>
+            </div>
+            <div class="modal-body">
+                <div class="date-edit">
+                    <label for="editDate">วันที่:</label>
+                    <input type="date" id="editDate">
+                </div>
+                <div class="meal-sections">
+                    <div class="meal-section-edit breakfast">
+                        <div class="meal-header-row">
+                            <div class="meal-header-left">
+                                <div class="icon-selector">
+                                    <img src="" alt="Breakfast" class="meal-icon">
+                                </div>
+                                <span class="meal-type-label">มื้อเช้า</span>
+                            </div>
+                            <button class="add-meal-btn">+ เพิ่มเมนู</button>
+                        </div>
+                        <div class="meal-list"></div>
+                    </div>
+                    <div class="meal-section-edit lunch">
+                        <div class="meal-header-row">
+                            <div class="meal-header-left">
+                                <div class="icon-selector">
+                                    <img src="" alt="Lunch" class="meal-icon">
+                                </div>
+                                <span class="meal-type-label">มื้อกลางวัน</span>
+                            </div>
+                            <button class="add-meal-btn">+ เพิ่มเมนู</button>
+                        </div>
+                        <div class="meal-list"></div>
+                    </div>
+                    <div class="meal-section-edit dinner">
+                        <div class="meal-header-row">
+                            <div class="meal-header-left">
+                                <div class="icon-selector">
+                                    <img src="" alt="Dinner" class="meal-icon">
+                                </div>
+                                <span class="meal-type-label">มื้อเย็น</span>
+                            </div>
+                            <button class="add-meal-btn">+ เพิ่มเมนู</button>
+                        </div>
+                        <div class="meal-list"></div>
+                    </div>
+                </div>
+                <div class="total-calories-edit">
+                    <span>แคลอรี่ทั้งหมด:</span>
+                    <span class="total-calorie-value">1,350</span>
+                    <span class="calorie-unit">kcal</span>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button id="saveEdit" class="confirm-btn">บันทึก</button>
+                <button id="cancelEdit" class="cancel-btn">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Select Menu Modal -->
+    <div id="selectMenuModal" class="modal">
+        <div class="modal-content select-menu-modal">
+            <h2>เลือกเมนูอาหารที่บันทึกไว้</h2>
+            <div class="menu-list">
+                <!-- Menu items will be dynamically added here -->
+            </div>
+            <div class="modal-buttons">
+                <button id="confirmMenu" class="confirm-btn">ยืนยัน</button>
+                <button id="cancelMenu" class="cancel-btn">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="menuDetailModal" class="modal">
+        <div class="modal-content menu-detail-modal">
+            <button class="close-detail-modal">&times;</button>
+            <h2 class="detail-menu-name"></h2>
+            <div class="detail-menu-date"></div>
+            <div class="detail-ingredients"></div>
+            <div class="detail-total-calories"></div>
+        </div>
+    </div>
+
+    
+
+    <script src="{{ url_for('static', filename='js/Inventory_Login.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/Layout_Home.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/Layout_Login.js') }}"></script>
+</body>
+</html>
