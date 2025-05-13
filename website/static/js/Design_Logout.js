@@ -414,6 +414,85 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+
+    // --- เพิ่มเติม: ดึงข้อมูลจาก sessionStorage ถ้ามี ---
+    const editMenuData = sessionStorage.getItem('editMenuData');
+    if (editMenuData) {
+        try {
+            const { menuName, ingredients } = JSON.parse(editMenuData);
+            // วนลูป ingredients แล้วเติมลง .ingredient-items
+            if (ingredients && Array.isArray(ingredients)) {
+                ingredients.forEach(ingredient => {
+                    // หา ingredient box ที่ตรงกับชื่อวัตถุดิบ
+                    const box = Array.from(document.querySelectorAll('.sum-ingredients .box')).find(b => {
+                        return b.querySelector('h1') && b.querySelector('h1').textContent.trim() === ingredient.name.trim();
+                    });
+                    if (box) {
+                        // หา category header
+                        const mainCategory = box.getAttribute('data-main-category');
+                        const targetHeader = Array.from(document.querySelectorAll('.category-header')).find(header => {
+                            const categorySpan = header.querySelector('span:last-child');
+                            return categorySpan && categorySpan.textContent === mainCategory;
+                        });
+                        if (targetHeader) {
+                            const categoryContainer = targetHeader.closest('.ingredient-category');
+                            let itemsContainer = categoryContainer.querySelector('.ingredient-items');
+                            if (!itemsContainer) {
+                                itemsContainer = document.createElement('div');
+                                itemsContainer.className = 'ingredient-items';
+                                categoryContainer.appendChild(itemsContainer);
+                            }
+                            // สร้าง element ingredient-item
+                            const imgElement = box.querySelector('img');
+                            const caloriesText = box.querySelector('p:last-of-type').textContent;
+                            const calories = parseFloat(caloriesText.split(':')[1]);
+                            const newItem = document.createElement('div');
+                            newItem.className = 'ingredient-item';
+                            newItem.innerHTML = `
+                                <img src="${imgElement.src}" class="food-img">
+                                <div class="ingredient-info">
+                                    <div class="name-calorie-container">
+                                        <span>${ingredient.name}</span>
+                                        <div class="calorie-container">
+                                            <span>${calories} kcal</span>
+                                        </div>
+                                    </div>
+                                    <div class="quantity-delete-container">
+                                        <input type="number" class="quantity-input" value="1" min="1" step="1">
+                                        <button class="delete-btn">
+                                            <img src="/static/Image/delete.png">
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                            // Event: quantity input
+                            const quantityInput = newItem.querySelector('.quantity-input');
+                            quantityInput.addEventListener('input', updateTotalCalories);
+                            // Event: delete
+                            const deleteBtn = newItem.querySelector('.delete-btn');
+                            if (deleteBtn) {
+                                deleteBtn.addEventListener('click', () => {
+                                    newItem.remove();
+                                    updateTotalCalories();
+                                });
+                            }
+                            itemsContainer.appendChild(newItem);
+                            itemsContainer.style.display = 'block';
+                            // เปิด section
+                            const toggleBtn = targetHeader.querySelector('.toggle-btn');
+                            if (toggleBtn) toggleBtn.textContent = '▼';
+                        }
+                    }
+                });
+                // อัปเดตแคลอรี่รวม
+                if (typeof updateTotalCalories === 'function') updateTotalCalories();
+            }
+        } catch (e) {
+            console.error('Error parsing editMenuData:', e);
+        }
+        // ลบ sessionStorage ทิ้ง
+        sessionStorage.removeItem('editMenuData');
+    }
 });
 
 

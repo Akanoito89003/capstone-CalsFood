@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/Layout_Logout.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/AI-Process_Logout.css') }}">
-    <title>AI-logout</title>
+    <title>AI-Process</title>
 </head>
 
 <body>
@@ -23,14 +23,14 @@
             <h2>CalsFood</h2>
         </div>
 
-        <a href="Home_Logout.html" class="button">Home</a>
-        <a href="Design_Logout.html" class="button">Design</a>
-        <a href="AI_Logout.html" class="button">AI</a>
-        <a href="Login.html" class="button">Inventory</a>
+        <a class="button" id="Home_Logout" href="/">Home</a>
+        <a class="button" id="Design" href="/design">Design</a>
+        <a class="button" id="AI" href="/ai-test">AI</a>
+        <a class="button" id="Inventory" href="/inventory">Inventory</a>
 
         <div class="account">
             <img id="icon-profile" src="{{ url_for('static', filename='Image/icon-profile.png') }}">
-            <a href="Login.html">Sign in</a>
+            <a href="{{ url_for('auth.login') }}">Sign in</a>
         </div>
     </div>
 
@@ -38,72 +38,36 @@
         <img src="https://images.pexels.com/photos/349609/pexels-photo-349609.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="">
     </div>
 
-
-
     <div class="content">
         <div class="food-analyzer">
             <h1>Food Analyzer</h1>
             <div class="analyzer-box">
                 <div class="result-container">
                     <div class="food-info">
-                        <h2>Menu: ข้าวผัดกะเพราไข่ดาว</h2>
+                        <h2>Menu: {{ menu_name }}</h2>
                         <div class="food-image">
-                            <img src="{{ url_for('static', filename='Image/ข้าวผัดกะเพรา.jpg') }}" alt="Food Image">
+                            <img src="{{ url_for('static', filename='menu_images/' + menu_name + '.jpg') }}" alt="Food Image">
                         </div>
                     </div>
                     <div class="calories-info">
                         <h3>วัตถุดิบ</h3>
                         <div class="ingredient-list">
+                            {% for ingredient in ingredients %}
                             <div class="ingredient-item">
-                                <span class="ingredient-name">ข้าว</span>
+                                <span class="ingredient-name">{{ ingredient.name }}</span>
                                 <div class="calorie-bar">
-                                    <div class="bar-fill"></div>
+                                    <div class="bar-fill" style="width: {{ (ingredient.calories|float / total_calories * 100)|round }}%"></div>
                                 </div>
-                                <span class="calorie-value">800 cal</span>
+                                <span class="calorie-value">{{ ingredient.calories }} kcal</span>
                             </div>
-                            <div class="ingredient-item">
-                                <span class="ingredient-name">ไก่</span>
-                                <div class="calorie-bar">
-                                    <div class="bar-fill"></div>
-                                </div>
-                                <span class="calorie-value">800 cal</span>
-                            </div>
-                            <div class="ingredient-item">
-                                <span class="ingredient-name">กะเพรา</span>
-                                <div class="calorie-bar">
-                                    <div class="bar-fill"></div>
-                                </div>
-                                <span class="calorie-value">800 cal</span>
-                            </div>
-                            <div class="ingredient-item">
-                                <span class="ingredient-name">ไข่ดาว</span>
-                                <div class="calorie-bar">
-                                    <div class="bar-fill"></div>
-                                </div>
-                                <span class="calorie-value">800 cal</span>
-                            </div>
-                            <div class="ingredient-item">
-                                <span class="ingredient-name">น้ำมัน</span>
-                                <div class="calorie-bar">
-                                    <div class="bar-fill"></div>
-                                </div>
-                                <span class="calorie-value">800 cal</span>
-                            </div>
-                            <div class="ingredient-item">
-                                <span class="ingredient-name">เครื่องปรุง</span>
-                                <div class="calorie-bar">
-                                    <div class="bar-fill"></div>
-                                </div>
-                                <span class="calorie-value">800 cal</span>
-                            </div>
+                            {% endfor %}
                         </div>
                         <div class="total-calories">
                             <span>รวม</span>
-                            <span class="total-value">999 cal</span>
+                            <span class="total-value">{{ total_calories }} kcal</span>
                         </div>
                     </div>
                 </div>
-
 
                 <div class="btn-container">
                     <input type="file" id="file-input" accept="image/*" style="display: none">
@@ -118,7 +82,7 @@
         </div>
     </div>
 
-    <!-- Add modal dialog before closing body tag -->
+    <!-- Login Modal -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <h2>แจ้งเตือน</h2>

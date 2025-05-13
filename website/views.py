@@ -302,7 +302,6 @@ def ai_test():
     return render_template("AI_Logout.html", user=None)
 
 @views.route('/ai-process')
-@login_required
 def ai_process():
     """แสดงหน้าผลการวิเคราะห์อาหาร"""
     food_name = request.args.get('food')
@@ -328,13 +327,23 @@ def ai_process():
             'category': ingredient.category.category_name
         })
     
-    return render_template(
-        "AI-Process_Login.html",
-        user=current_user,
-        menu_name=food_name,
-        ingredients=ingredients_data,
-        total_calories=total_calories
-    )
+    # Choose template based on authentication status
+    if current_user.is_authenticated:
+        return render_template(
+            "AI-Process_Login.html",
+            user=current_user,
+            menu_name=food_name,
+            ingredients=ingredients_data,
+            total_calories=total_calories
+        )
+    else:
+        return render_template(
+            "AI-Process_Logout.html",
+            user=None,
+            menu_name=food_name,
+            ingredients=ingredients_data,
+            total_calories=total_calories
+        )
 
 def format_birthday(birthday_str):
     # ลองแปลงจากรูปแบบที่พบบ่อย

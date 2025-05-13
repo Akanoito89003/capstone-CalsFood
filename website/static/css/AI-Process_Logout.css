@@ -112,7 +112,7 @@
 .bar-fill {
     width: 75%;
     height: 100%;
-    background-color: #666;
+    background-color: #27ae60 !important;
     border-radius: 10px;
 }
 

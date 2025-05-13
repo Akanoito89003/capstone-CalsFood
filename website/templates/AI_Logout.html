@@ -23,37 +23,20 @@
             <h2>CalsFood</h2>
         </div>
 
-        {%if user.is_authenticated %}
-        <a class="button" id="Home_Login" href="/">Home</a> 
-        <a class="button" id="Design" href="/design">Design</a>
-        <a class="button" id="AI" href="/ai-test">AI</a>
-        <a class="button" id="Inventory" href="/inventory">Inventory</a>
-        {% else %}
-        {# ถ้าuser ยังไม่ได้มีการ login เมื่อกดหน้าอื่น ให้มันไปแสดงที่หน้า Signin หรือ Login #}
         <a class="button" id="Home_Logout" href="/">Home</a>
         <a class="button" id="Design" href="/design">Design</a>
         <a class="button" id="AI" href="/ai-test">AI</a>
         <a class="button" id="Inventory" href="/inventory">Inventory</a>
-        {% endif %}
-        
-        {%if user.is_authenticated %}
-        <div class="account" data-profile-url="{{ url_for('views.profile') }}" data-logout-url="{{ url_for('auth.logout') }}">
-            {% if user.profile_image %}
-                <img id="icon-profile" src="{{ url_for('static', filename='profile_pics/' + user.profile_image) }}" alt="Profile Picture">
-            {% else %}
-                <img id="icon-profile" src="{{ url_for('static', filename='Image/icon-profile.png') }}" alt="Default Profile">
-            {% endif %}
-            <p>{{ user.Username }}</p>
-            <img id="setting" src="{{ url_for('static', filename='Image/icon-Hamburger.png') }}">
+
+        <div class="account">
+            <img id="icon-profile" src="{{ url_for('static', filename='Image/icon-profile.png') }}">
+            <a href="{{ url_for('auth.login') }}">Sign in</a>
         </div>
-        {% endif %}
     </div>
 
     <div class="background">
         <img src="https://images.pexels.com/photos/349609/pexels-photo-349609.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="">
     </div>
-
-
 
     <div class="content">
         <div class="food-analyzer">
