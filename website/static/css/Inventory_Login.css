@@ -1386,8 +1386,8 @@
 }
 .detail-ingredient-row {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   padding: 10px;
   border-bottom: 1px solid #eee;
 }
@@ -1395,12 +1395,25 @@
   border-bottom: none;
 }
 .ingredient-name {
+  flex: 2 1 0;
+  min-width: 120px;
+  text-align: left;
+  padding-right: 10px;
+  word-break: break-word;
   font-size: 1rem;
   color: #333;
 }
+.ingredient-quantity {
+  flex: 0 0 40px;
+  text-align: center;
+  color: #444;
+  font-size: 1rem;
+}
 .ingredient-calories {
-  font-size: 0.9rem;
+  flex: 0 0 70px;
+  text-align: right;
   color: #666;
+  font-size: 0.9rem;
 }
 .no-ingredients {
   text-align: center;

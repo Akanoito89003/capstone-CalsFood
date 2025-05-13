@@ -688,8 +688,24 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!multiplier) {
         multiplier = 1.2; // default
         setUserMultiplierCookie(multiplier);
+        // disable ปุ่มอื่นชั่วคราว
+        document.querySelectorAll('.activity-btn').forEach(btn => {
+            if (btn.dataset.multiplier !== '1.2') {
+                btn.disabled = true;
+                btn.style.opacity = 0.5;
+            }
+        });
+        // เมื่อ user กดปุ่มอื่น ให้ enable ทุกปุ่ม
+        document.querySelectorAll('.activity-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.activity-btn').forEach(b => {
+                    b.disabled = false;
+                    b.style.opacity = 1;
+                });
+            }, { once: true });
+        });
     }
-    const btn = document.querySelector(`.activity-btn[data-multiplier=\"${multiplier}\"]`);
+    const btn = document.querySelector(`.activity-btn[data-multiplier="${multiplier}"]`);
     if (btn) {
         btn.classList.add('active');
         updateTDEE(multiplier);
