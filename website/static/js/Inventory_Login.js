@@ -1003,11 +1003,12 @@ document.addEventListener("DOMContentLoaded", function () {
                         if (data.ingredients && data.ingredients.length > 0) {
                             let total = 0;
                             ingElem.innerHTML = data.ingredients.map(ing => {
-                                total += parseInt(ing.calories || 0);
+                                total += parseFloat(ing.calories || 0);
                                 return `
                                     <div class="detail-ingredient-row">
                                         <span class="ingredient-name">${ing.name}</span>
-                                        <span class="ingredient-calories">${ing.calories || 0} </span>
+                                        <span class="ingredient-quantity">x${ing.quantity}</span>
+                                        <span class="ingredient-calories">${ing.calories} kcal</span>
                                     </div>
                                 `;
                             }).join('');

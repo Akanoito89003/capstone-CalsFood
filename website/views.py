@@ -483,7 +483,7 @@ def save_menu():
         menu_name = data.get('menu_name')
         datetime_str = data.get('datetime')
         total_calories = data.get('total_calories')
-        ingredients = data.get('ingredients', [])  # List of dicts: {name, calories}
+        ingredients = data.get('ingredients', [])  # List of dicts: {name, quantity, calories}
 
         if not menu_name:
             return jsonify({'success': False, 'error': 'กรุณากรอกชื่ออาหาร'})
@@ -503,12 +503,25 @@ def save_menu():
             db.session.add(new_menu)
             db.session.flush()  # เพื่อให้ new_menu.mymenu_id ถูกสร้าง
 
-            # Add ingredients to menu (by name)
+            # Add ingredients to menu (by name) with quantity and calories
             for ingredient_data in ingredients:
                 name = ingredient_data.get('name')
+                quantity = float(ingredient_data.get('quantity', 1))
+                calories = float(ingredient_data.get('calories', 0))
                 ingredient = Ingredient.query.filter_by(ingredient_name=name).first()
                 if ingredient:
-                    new_menu.ingredients.append(ingredient)
+                    db.session.execute(
+                        text("""
+                        INSERT INTO mymenu_ingredient (mymenu_id, ingredient_id, quantity, total_calories)
+                        VALUES (:mymenu_id, :ingredient_id, :quantity, :total_calories)
+                        """),
+                        {
+                            'mymenu_id': new_menu.mymenu_id,
+                            'ingredient_id': ingredient.ingredient_id,
+                            'quantity': quantity,
+                            'total_calories': calories
+                        }
+                    )
             db.session.commit()
             return jsonify({
                 'success': True,
@@ -555,20 +568,28 @@ def delete_menu(menu_id):
 def get_menu_ingredients(menu_id):
     try:
         menu = MyMenu.query.get_or_404(menu_id)
-        print('DEBUG: menu.ingredients =', menu.ingredients)
-        for ing in menu.ingredients:
-            print('DEBUG: ingredient:', ing.ingredient_id, ing.ingredient_name, ing.ingredient_calories)
-        ingredients = [{
-            'name': ing.ingredient_name,
-            'calories': ing.ingredient_calories
-        } for ing in menu.ingredients]
-        print('DEBUG: ingredients =', ingredients)
+        # Join MyMenu_Ingredient and Ingredient to get name, quantity, calories
+        rows = db.session.execute(
+            text("""
+            SELECT i.ingredient_name, mi.quantity, mi.total_calories
+            FROM mymenu_ingredient mi
+            JOIN ingredient i ON mi.ingredient_id = i.ingredient_id
+            WHERE mi.mymenu_id = :menu_id
+            """),
+            {'menu_id': menu_id}
+        ).fetchall()
+        ingredients = [
+            {
+                'name': row[0],
+                'quantity': row[1],
+                'calories': row[2]
+            } for row in rows
+        ]
         return jsonify({
             'success': True,
             'ingredients': ingredients
         })
     except Exception as e:
-        print('DEBUG: error in get_menu_ingredients:', e)
         return jsonify({
             'success': False,
             'error': str(e)
@@ -673,7 +694,6 @@ def delete_daily_meal(daily_id):
         # ตรวจสอบว่าถ้าไม่มีข้อมูล daily แล้ว ให้รีเซ็ต auto-increment
         if Daily.query.count() == 0:
             # รีเซ็ต auto-increment counter สำหรับตาราง daily และ daily_mymenu
-            from sqlalchemy import text
             try:
                 # ใช้ TRUNCATE TABLE เพื่อลบข้อมูลและรีเซ็ต auto-increment
                 db.session.execute(text('TRUNCATE TABLE daily'))

@@ -367,9 +367,10 @@ document.addEventListener("DOMContentLoaded", function () {
         ingredientItems.forEach(item => {
             const name = item.querySelector('.name-calorie-container span')?.textContent?.trim();
             const calorieText = item.querySelector('.calorie-container span')?.textContent || '';
-            const calories = parseFloat(calorieText.replace(' kcal', ''));
-            if (name && !isNaN(calories)) {
-                ingredients.push({ name, calories });
+            const caloriesPerUnit = parseFloat(calorieText.replace(' kcal', ''));
+            const quantity = parseFloat(item.querySelector('.quantity-input')?.value) || 1;
+            if (name && !isNaN(caloriesPerUnit) && !isNaN(quantity)) {
+                ingredients.push({ name, quantity, calories: caloriesPerUnit * quantity });
             }
         });
         return ingredients;

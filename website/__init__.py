@@ -90,6 +90,8 @@ def init_db_data():
 
             # เพิ่มวัตถุดิบ
             ingredients = [
+                # ประมาณ 160 อัน
+                
                 # 1 - คาร์โบไฮเดรต
                 Ingredient(ingredient_name="ฟักทอง", ingredient_calories="10 kcal", ingredient_value="30 g", ingredient_photo="ฟักทอง.png", category_id=1),
                 Ingredient(ingredient_name="ข้าวโพดอ่อน", ingredient_calories="6 kcal", ingredient_value="20 g", ingredient_photo="ข้าวโพดอ่อน.png", category_id=1),
@@ -101,6 +103,23 @@ def init_db_data():
                 Ingredient(ingredient_name="ข้าวหมก", ingredient_calories="270 kcal", ingredient_value="180 g", ingredient_photo="ข้าวหมก.png", category_id=1),
                 Ingredient(ingredient_name="ข้าวคั่ว", ingredient_calories="20 kcal", ingredient_value="5 g", ingredient_photo="ข้าวคั่ว.png", category_id=1),
                 Ingredient(ingredient_name="เส้นใหญ่", ingredient_calories="210 kcal", ingredient_value="150 g", ingredient_photo="เส้นใหญ่.png", category_id=1),
+                Ingredient(ingredient_name="เส้นหมี่", ingredient_calories="180 kcal", ingredient_value="60 g", ingredient_photo="เส้นหมี่.png", category_id=1),
+                Ingredient(ingredient_name="แป้งข้าวเจ้า", ingredient_calories="131 kcal", ingredient_value="36 g", ingredient_photo="แป้งข้าวเจ้า.png", category_id=1),
+                Ingredient(ingredient_name="แป้งมันสำปะหลัง", ingredient_calories="126 kcal", ingredient_value="35 g", ingredient_photo="แป้งมันสำปะหลัง.png", category_id=1),
+                Ingredient(ingredient_name="แป้งสาลี", ingredient_calories="153 kcal", ingredient_value="45 g", ingredient_photo="แป้งสาลี.png", category_id=1),
+                Ingredient(ingredient_name="ธัญพืชรวม", ingredient_calories="102 kcal", ingredient_value="30 g", ingredient_photo="ธัญพืชรวม.png", category_id=1),
+                Ingredient(ingredient_name="ข้าวโพด", ingredient_calories="100 kcal", ingredient_value="80 g", ingredient_photo="ข้าวโพด.png", category_id=1),
+                Ingredient(ingredient_name="ข้าวเหนียว", ingredient_calories="145 kcal", ingredient_value="100 g", ingredient_photo="ข้าวเหนียว.png", category_id=1),
+                Ingredient(ingredient_name="ข้าวไรซ์เบอร์รี่", ingredient_calories="110 kcal", ingredient_value="100 g", ingredient_photo="ข้าวไรซ์เบอร์รี่.png", category_id=1),
+                Ingredient(ingredient_name="ข้าวกล้อง", ingredient_calories="110 kcal", ingredient_value="100 g", ingredient_photo="ข้าวกล้อง.png", category_id=1),
+                Ingredient(ingredient_name="เผือก", ingredient_calories="78 kcal", ingredient_value="70 g", ingredient_photo="เผือก.png", category_id=1),
+                Ingredient(ingredient_name="ข้าวหอมมะลิ", ingredient_calories="112 kcal", ingredient_value="50 g", ingredient_photo="ข้าวหอมมะลิ.png", category_id=1),
+                Ingredient(ingredient_name="บะหมี่เหลือง", ingredient_calories="165 kcal", ingredient_value="90 g", ingredient_photo="บะหมี่เหลือง.png", category_id=1),
+                Ingredient(ingredient_name="มันเทศ", ingredient_calories="103 kcal", ingredient_value="120 g", ingredient_photo="มันเทศ.png", category_id=1),
+                Ingredient(ingredient_name="ขนมปังขาว", ingredient_calories="66 kcal", ingredient_value="25 g", ingredient_photo="ขนมปังขาว.png", category_id=1),
+                Ingredient(ingredient_name="ขนมปังโฮลวีต", ingredient_calories="70 kcal", ingredient_value="27 g", ingredient_photo="ขนมปังโฮลวีต.png", category_id=1),
+                Ingredient(ingredient_name="เส้นมาม่า", ingredient_calories="190 kcal", ingredient_value="55 g", ingredient_photo="เส้นมาม่า.png", category_id=1),
+                Ingredient(ingredient_name="เส้นเล็ก", ingredient_calories="144 kcal", ingredient_value="80 g", ingredient_photo="เส้นเล็ก.png", category_id=1),
 
                 # 2 - โปรตีน
                 Ingredient(ingredient_name="เนื้อไก่", ingredient_calories="120 kcal", ingredient_value="60 g", ingredient_photo="เนื้อไก่.png", category_id=2),
@@ -113,13 +132,45 @@ def init_db_data():
                 Ingredient(ingredient_name="เนื้อหมูสามชั้น", ingredient_calories="117 kcal", ingredient_value="30 g", ingredient_photo="เนื้อหมูสามชั้น.png", category_id=2),
                 Ingredient(ingredient_name="เต้าหู้เหลือง", ingredient_calories="30 kcal", ingredient_value="20 g", ingredient_photo="เต้าหู้เหลือง.png", category_id=2),
                 Ingredient(ingredient_name="หอยลาย", ingredient_calories="60 kcal", ingredient_value="60 g", ingredient_photo="หอยลาย.png", category_id=2),
-                Ingredient(ingredient_name="ขาหมู", ingredient_calories="255 kcal", ingredient_value="60 g", ingredient_photo="ขาหมู.png", category_id=2),
+                Ingredient(ingredient_name="ขาหมู", ingredient_calories="255 kcal", ingredient_value="60 g", ingredient_photo="ขาหมู.png", category_id=2),             
+                Ingredient(ingredient_name="เนื้อวัว", ingredient_calories="150 kcal", ingredient_value="60 g", ingredient_photo="เนื้อวัว.png", category_id=2),
+                Ingredient(ingredient_name="ถั่วเหลือง", ingredient_calories="178 kcal", ingredient_value="40 g", ingredient_photo="ถั่วเหลือง.png", category_id=2),
+                Ingredient(ingredient_name="ถั่วเขียว", ingredient_calories="139 kcal", ingredient_value="40 g", ingredient_photo="ถั่วเขียว.png", category_id=2),
+                Ingredient(ingredient_name="โยเกิร์ต", ingredient_calories="54 kcal", ingredient_value="75 g", ingredient_photo="โยเกิร์ต.png", category_id=2),
+                Ingredient(ingredient_name="นมวัว", ingredient_calories="50 kcal", ingredient_value="75 g", ingredient_photo="นมวัว.png", category_id=2),
+                Ingredient(ingredient_name="เมล็ดแฟลกซ์", ingredient_calories="160 kcal", ingredient_value="30 g", ingredient_photo="เมล็ดแฟลกซ์.png", category_id=2),
+                Ingredient(ingredient_name="ไข่เป็ด", ingredient_calories="93 kcal", ingredient_value="50 g", ingredient_photo="ไข่เป็ด.png", category_id=2),
+                Ingredient(ingredient_name="ไข่นกกระทา", ingredient_calories="47 kcal", ingredient_value="30 g", ingredient_photo="ไข่นกกระทา.png", category_id=2),
+                Ingredient(ingredient_name="ถั่วแดง", ingredient_calories="135 kcal", ingredient_value="40 g", ingredient_photo="ถั่วแดง.png", category_id=2),
+                Ingredient(ingredient_name="อัลมอนด์", ingredient_calories="145 kcal", ingredient_value="25 g", ingredient_photo="อัลมอนด์.png", category_id=2),
+                Ingredient(ingredient_name="เมล็ดทานตะวัน", ingredient_calories="146 kcal", ingredient_value="25 g", ingredient_photo="เมล็ดทานตะวัน.png", category_id=2),
+                Ingredient(ingredient_name="ปลาหมึกกล้วย", ingredient_calories="69 kcal", ingredient_value="75 g", ingredient_photo="ปลาหมึกกล้วย.png", category_id=2),
+                Ingredient(ingredient_name="เต้าหู้ขาว", ingredient_calories="57 kcal", ingredient_value="75 g", ingredient_photo="เต้าหู้ขาว.png", category_id=2),
+                Ingredient(ingredient_name="ปลาหมึกกระดอง", ingredient_calories="46 kcal", ingredient_value="50 g", ingredient_photo="ปลาหมึกกระดอง.png", category_id=2),
+                Ingredient(ingredient_name="หอยนางรม", ingredient_calories="52 kcal", ingredient_value="75 g", ingredient_photo="หอยนางรม.png", category_id=2),
+                Ingredient(ingredient_name="ปูม้า", ingredient_calories="68 kcal", ingredient_value="70 g", ingredient_photo="ปูม้า.png", category_id=2),
+                Ingredient(ingredient_name="หมูยอ", ingredient_calories="203 kcal", ingredient_value="70 g", ingredient_photo="หมูยอ.png", category_id=2),
+                Ingredient(ingredient_name="หอยแครง", ingredient_calories="48 kcal", ingredient_value="70 g", ingredient_photo="หอยแครง.png", category_id=2),
+                Ingredient(ingredient_name="เบคอน", ingredient_calories="216 kcal", ingredient_value="40 g", ingredient_photo="เบคอน.png", category_id=2),
+                Ingredient(ingredient_name="กุ้งแห้ง", ingredient_calories="101 kcal", ingredient_value="40 g", ingredient_photo="กุ้งแห้ง.png", category_id=2),
+                Ingredient(ingredient_name="นมข้นจืด", ingredient_calories="113 kcal", ingredient_value="35 g", ingredient_photo="นมข้นจืด.png", category_id=2),
+                Ingredient(ingredient_name="ปลาแห้ง", ingredient_calories="145 kcal", ingredient_value="50 g", ingredient_photo="ปลาแห้ง.png", category_id=2),
+
 
                 # 3 - ไขมัน
                 Ingredient(ingredient_name="กะทิ", ingredient_calories="107 kcal", ingredient_value="55 g", ingredient_photo="กะทิ.png", category_id=3),
                 Ingredient(ingredient_name="น้ำมันพืช", ingredient_calories="54 kcal", ingredient_value="6 g", ingredient_photo="น้ำมันพืช.png", category_id=3),
                 Ingredient(ingredient_name="กระเทียมเจียว", ingredient_calories="9 kcal", ingredient_value="2 g", ingredient_photo="กระเทียมเจียว.png", category_id=3),
                 Ingredient(ingredient_name="หอมเจียว", ingredient_calories="45 kcal", ingredient_value="5 g", ingredient_photo="หอมเจียว.png", category_id=3),
+                Ingredient(ingredient_name="ไขมันหมู", ingredient_calories="451 kcal", ingredient_value="50 g", ingredient_photo="ไขมันหมู.png", category_id=3),
+                Ingredient(ingredient_name="ครีมเทียม", ingredient_calories="125 kcal", ingredient_value="25 g", ingredient_photo="ครีมเทียม.png", category_id=3),
+                Ingredient(ingredient_name="เนย", ingredient_calories="215 kcal", ingredient_value="30 g", ingredient_photo="เนย.png", category_id=3),
+                Ingredient(ingredient_name="น้ำมันถั่วเหลือง", ingredient_calories="265 kcal", ingredient_value="30 g", ingredient_photo="น้ำมันถั่วเหลือง.png", category_id=3),
+                Ingredient(ingredient_name="น้ำมันมะพร้าว", ingredient_calories="345 kcal", ingredient_value="40 g", ingredient_photo="น้ำมันมะพร้าว.png", category_id=3),
+                Ingredient(ingredient_name="น้ำมันมะกอก", ingredient_calories="177 kcal", ingredient_value="20 g", ingredient_photo="น้ำมันมะกอก.png", category_id=3),
+                Ingredient(ingredient_name="น้ำมันรำข้าว", ingredient_calories="310 kcal", ingredient_value="35 g", ingredient_photo="น้ำมันรำข้าว.png", category_id=3),
+                Ingredient(ingredient_name="มาการีน", ingredient_calories="502 kcal", ingredient_value="70 g", ingredient_photo="มาการีน.png", category_id=3),
+                Ingredient(ingredient_name="น้ำมันงา", ingredient_calories="221 kcal", ingredient_value="25 g", ingredient_photo="น้ำมันงา.png", category_id=3),
 
                 # 4 - วิตามินและเกลือแร่
                 Ingredient(ingredient_name="ผักบุ้ง", ingredient_calories="9 kcal", ingredient_value="50 g", ingredient_photo="ผักบุ้ง.png", category_id=4),
@@ -159,7 +210,23 @@ def init_db_data():
                 Ingredient(ingredient_name="สะระแหน่", ingredient_calories="0.5 kcal", ingredient_value="2.5 g", ingredient_photo="สะระแหน่.png", category_id=4),
                 Ingredient(ingredient_name="มะละกอ", ingredient_calories="32 kcal", ingredient_value="80 g", ingredient_photo="มะละกอ.png", category_id=4),
                 Ingredient(ingredient_name="มะม่วงดิบ", ingredient_calories="7 kcal", ingredient_value="20 g", ingredient_photo="มะม่วงดิบ.png", category_id=4),
-
+                Ingredient(ingredient_name="ส้ม", ingredient_calories="35 kcal", ingredient_value="75 g", ingredient_photo="ส้ม.png", category_id=4),
+                Ingredient(ingredient_name="อะโวคาโด", ingredient_calories="112 kcal", ingredient_value="70 g", ingredient_photo="อะโวคาโด.png", category_id=4),
+                Ingredient(ingredient_name="ดอกแค", ingredient_calories="24 kcal", ingredient_value="75 g", ingredient_photo="ดอกแค.png", category_id=4),
+                Ingredient(ingredient_name="มะม่วงสุก", ingredient_calories="48 kcal", ingredient_value="80 g", ingredient_photo="มะม่วงสุก.png", category_id=4),
+                Ingredient(ingredient_name="กล้วย", ingredient_calories="53 kcal", ingredient_value="60 g", ingredient_photo="กล้วย.png", category_id=4),
+                Ingredient(ingredient_name="ฝรั่ง", ingredient_calories="41 kcal", ingredient_value="60 g", ingredient_photo="ฝรั่ง.png", category_id=4),
+                Ingredient(ingredient_name="แอปเปิ้ล", ingredient_calories="39 kcal", ingredient_value="75 g", ingredient_photo="แอปเปิ้ล.png", category_id=4),
+                Ingredient(ingredient_name="แตงโม", ingredient_calories="24 kcal", ingredient_value="80 g", ingredient_photo="แตงโม.png", category_id=4),
+                Ingredient(ingredient_name="หัวไชเท้า", ingredient_calories="12 kcal", ingredient_value="75 g", ingredient_photo="หัวไชเท้า.png", category_id=4),
+                Ingredient(ingredient_name="ชะอม", ingredient_calories="43 kcal", ingredient_value="75 g", ingredient_photo="ชะอม.png", category_id=4),
+                Ingredient(ingredient_name="ผักชีฝรั่ง", ingredient_calories="12 kcal", ingredient_value="50 g", ingredient_photo="ผักชีฝรั่ง.png", category_id=4),
+                Ingredient(ingredient_name="กระชาย", ingredient_calories="60 kcal", ingredient_value="75 g", ingredient_photo="กระชาย.png", category_id=4),
+                Ingredient(ingredient_name="พริกหวาน", ingredient_calories="16 kcal", ingredient_value="80 g", ingredient_photo="พริกหวาน.png", category_id=4),
+                Ingredient(ingredient_name="ขมิ้น", ingredient_calories="156 kcal", ingredient_value="50 g", ingredient_photo="ขมิ้น.png", category_id=4),
+                Ingredient(ingredient_name="มะเขือพวง", ingredient_calories="18 kcal", ingredient_value="75 g", ingredient_photo="มะเขือพวง.png", category_id=4),
+                Ingredient(ingredient_name="เห็ดเข็มทอง", ingredient_calories="23 kcal", ingredient_value="75 g", ingredient_photo="เห็ดเข็มทอง.png", category_id=4),
+                Ingredient(ingredient_name="มะกรูด", ingredient_calories="22 kcal", ingredient_value="50 g", ingredient_photo="มะกรูด.png", category_id=4),
 
                 # 5 - เครื่องปรุง
                 Ingredient(ingredient_name="พริกเเกงเขียวหวาน", ingredient_calories="15 kcal", ingredient_value="10 g", ingredient_photo="พริกแกงเขียวหวาน.png", category_id=5),
@@ -184,6 +251,15 @@ def init_db_data():
                 Ingredient(ingredient_name="น้ำพริกเผา", ingredient_calories="20 kcal", ingredient_value="10 g", ingredient_photo="น้ำพริกเผา.png", category_id=5),
                 Ingredient(ingredient_name="พริกแกงพะแนง", ingredient_calories="15 kcal", ingredient_value="10 g", ingredient_photo="พริกแกงพะแนง.png", category_id=5),
                 Ingredient(ingredient_name="พริกไทย", ingredient_calories="1 kcal", ingredient_value="1 g", ingredient_photo="พริกไทย.png", category_id=5),
+                Ingredient(ingredient_name="ซอสหอยนางรม", ingredient_calories="15 kcal", ingredient_value="30 g", ingredient_photo="ซอสหอยนางรม.png", category_id=5),
+                Ingredient(ingredient_name="เกลือ", ingredient_calories="1 kcal", ingredient_value="10 g", ingredient_photo="เกลือ.png", category_id=5),
+                Ingredient(ingredient_name="น้ำมันหอย", ingredient_calories="15 kcal", ingredient_value="30 g", ingredient_photo="น้ำมันหอย.png", category_id=5),
+                Ingredient(ingredient_name="ผงกะหรี่", ingredient_calories="33 kcal", ingredient_value="10 g", ingredient_photo="ผงกะหรี่.png", category_id=5),
+                Ingredient(ingredient_name="ลูกผักชี", ingredient_calories="30 kcal", ingredient_value="10 g", ingredient_photo="ลูกผักชี.png", category_id=5),
+                Ingredient(ingredient_name="เม็ดกระวาน", ingredient_calories="31 kcal", ingredient_value="10 g", ingredient_photo="เม็ดกระวาน.png", category_id=5),
+                Ingredient(ingredient_name="ดอกจันทร์", ingredient_calories="0 kcal", ingredient_value="5 g", ingredient_photo="ดอกจันทร์.png", category_id=5),
+                Ingredient(ingredient_name="ยี่หร่า", ingredient_calories="35 kcal", ingredient_value="10 g", ingredient_photo="ยี่หร่า.png", category_id=5),
+                Ingredient(ingredient_name="ลูกจันทร์", ingredient_calories="0 kcal", ingredient_value="5 g", ingredient_photo="ลูกจันทร์.png", category_id=5)
             ]
 
             db.session.add_all(ingredients)

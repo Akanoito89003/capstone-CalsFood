@@ -22,6 +22,8 @@ class MyMenu_Ingredient(db.Model):
         db.ForeignKey('ingredient.ingredient_id', ondelete='CASCADE'),
         primary_key=True
     )
+    quantity = db.Column(db.Float, nullable=False, default=1)
+    total_calories = db.Column(db.Float, nullable=False, default=0)
 
 class Daily_MyMenu(db.Model):
     __tablename__ = 'daily_mymenu'
