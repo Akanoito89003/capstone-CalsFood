@@ -44,22 +44,17 @@ class ThaiFoodPredictor:
             "30": "อาหารที่ไม่รู้จัก"
         }
         
-        # การแปลงรูปภาพเพื่อทำการทำนาย
-        # กำหนด transformation
         self.transform = transforms.Compose([
             transforms.Resize((224, 224)),
             transforms.ToTensor(),
             transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
         ])
         
-        # โหลด model และปรับ architecture
-        self.model = models.resnet50(pretrained=False)
-        # แก้ไขส่วน fully connected layer ให้มี output เป็น 31 classes (รวม "อาหารที่ไม่รู้จัก")
-        num_classes = 31  # จำนวน classes อาหารไทย + 1 class สำหรับอาหารที่ไม่รู้จัก
-        self.model.fc = torch.nn.Linear(2048, num_classes)
+        self.model = models.convnext_tiny(weights=None)
+        num_ftrs = self.model.classifier[2].in_features
+        self.model.classifier[2] = torch.nn.Linear(num_ftrs, len(self.label_mapping))
         
-        # โหลด weights
-        model_path = os.path.join(os.path.dirname(__file__), 'models/resnet.pth')
+        model_path = os.path.join(os.path.dirname(__file__), 'models/convnext.pth')
         self.model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
         self.model.eval()
     
@@ -81,7 +76,7 @@ class ThaiFoodPredictor:
             
             # ถ้าความมั่นใจต่ำกว่า threshold ให้ถือว่าไม่ใช่รูปอาหาร
             if max_prob.item() < confidence_threshold:
-                return "ไม่สามารถระบุได้ (อาจไม่ใช่รูปอาหาร) หรืออาหารนี้ไม่มีในฐานข้อมูล"
+                return "ไม่สามารถระบุได้ (อาจไม่ใช่รูปอาหาร)"
                 
             # แปลงผลลัพธ์เป็นชื่ออาหาร
             predicted_class = f"{predicted_idx.item():02d}"
