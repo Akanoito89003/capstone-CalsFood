@@ -172,14 +172,20 @@ label {
 }
 
 .quantity-input {
-    width: 25px;
-    height: 20px;
-    padding: 0 2px;
+    width: 55px;
+    height: 28px;
+    padding: 0 8px;
     border: 1px solid #e7e7e7;
-    border-radius: 3px;
-    font-size: 12px;
+    border-radius: 5px;
+    font-size: 15px;
     text-align: center;
     background-color: white;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.quantity-input:focus {
+    border-color: #A5E135;
+    box-shadow: 0 0 5px #A5E13533;
 }
 
 .quantity-input::-webkit-inner-spin-button,

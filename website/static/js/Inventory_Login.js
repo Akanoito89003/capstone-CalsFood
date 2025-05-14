@@ -593,6 +593,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (data.success) {
                         fetchDailyMeals();
                         document.getElementById('editDailyMealModal').style.display = 'none';
+                        showSuccessDailyMealModal('แก้ไขมื้ออาหารสำเร็จ');
                     } else {
                         alert(data.error || 'เกิดข้อผิดพลาดขณะแก้ไขมื้ออาหาร');
                     }
@@ -1080,6 +1081,25 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // === Success Modal for Daily Meal ===
+    function showSuccessDailyMealModal(msg) {
+        const modal = document.getElementById('successDailyMealModal');
+        const text = document.getElementById('successDailyMealText');
+        const modalContent = modal.querySelector('.success-modal');
+        text.textContent = msg;
+        modal.style.display = 'flex';
+        modalContent.classList.remove('hide');
+    }
+    document.getElementById('closeSuccessDailyMeal').onclick = function() {
+        const modal = document.getElementById('successDailyMealModal');
+        const modalContent = modal.querySelector('.success-modal');
+        modalContent.classList.add('hide');
+        setTimeout(() => {
+            modal.style.display = 'none';
+            modalContent.classList.remove('hide');
+        }, 350); // match fadeOutDown duration
+    };
+
     // --- Daily Meal CRUD ---
     function fetchDailyMeals() {
         fetch('/daily-meals')
@@ -1181,14 +1201,25 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll('.daily-meal-card .delete-btn').forEach(btn => {
             btn.onclick = function() {
                 const dailyId = btn.getAttribute('data-daily-id');
-                if (confirm('ต้องการลบมื้ออาหารนี้ใช่หรือไม่?')) {
+                // Popup แทน confirm
+                const confirmModal = document.getElementById('deleteConfirmModal');
+                confirmModal.style.display = 'flex';
+                document.getElementById('confirmDelete').onclick = function() {
                     fetch(`/daily-meals/${dailyId}`, {method: 'DELETE'})
                         .then(res => res.json())
                         .then(data => {
-                            if (data.success) fetchDailyMeals();
-                            else alert(data.error || 'เกิดข้อผิดพลาดขณะลบมื้ออาหาร');
+                            confirmModal.style.display = 'none';
+                            if (data.success) {
+                                fetchDailyMeals();
+                                showSuccessDailyMealModal('ลบมื้ออาหารสำเร็จ');
+                            } else {
+                                alert(data.error || 'เกิดข้อผิดพลาดขณะลบมื้ออาหาร');
+                            }
                         });
-                }
+                };
+                document.getElementById('cancelDelete').onclick = function() {
+                    confirmModal.style.display = 'none';
+                };
             };
         });
     }
@@ -1206,6 +1237,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => {
             if (data.success) {
                 fetchDailyMeals();
+                showSuccessDailyMealModal('บันทึกมื้ออาหารสำเร็จ');
                 if (onSuccess) onSuccess();
             } else {
                 alert(data.error || 'เกิดข้อผิดพลาดขณะบันทึกมื้ออาหาร');

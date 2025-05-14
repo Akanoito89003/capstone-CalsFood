@@ -100,7 +100,7 @@ def signup():
             errors['confirm_password'] = 'Passwords do not match.'
             
         # Validate gender
-        if not user_gender or user_gender not in ['male', 'female']:
+        if not user_gender or user_gender not in ['Male', 'Female']:
             errors['gender'] = 'Please select a valid gender.'
             
         # Validate birthday

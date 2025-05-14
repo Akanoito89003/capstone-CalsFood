@@ -160,8 +160,8 @@
                                     class="form-control"
                                     id="male" 
                                     name="user_gender" 
-                                    value="male" 
-                                    {% if form_data.get('user_gender') == 'male' %}checked{% endif %} {# Repopulate checked #}
+                                    value="Male" 
+                                    {% if form_data.get('user_gender') == 'Male' %}checked{% endif %} {# Repopulate checked #}
                                     required>
                                 <label for="male">Male</label>
                             </div>
@@ -171,8 +171,8 @@
                                     class="form-control"
                                     id="female" 
                                     name="user_gender" 
-                                    value="female"
-                                    {% if form_data.get('user_gender') == 'female' %}checked{% endif %} {# Repopulate checked #}
+                                    value="Female"
+                                    {% if form_data.get('user_gender') == 'Female' %}checked{% endif %} {# Repopulate checked #}
                                     required>
                                 <label for="female">Female</label>
                             </div>

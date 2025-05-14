@@ -348,6 +348,15 @@ function hidePopup() {
     }
 }
 
+function showPasswordChangePopup() {
+    const popup = document.getElementById('profile-update-popup');
+    if (popup) {
+        popup.querySelector('h2').textContent = 'สำเร็จ!';
+        popup.querySelector('p').textContent = 'เปลี่ยนรหัสผ่านสำเร็จ';
+        popup.style.display = 'flex';
+    }
+}
+
 function savePassword() {
     const inputs = document.querySelectorAll('.password-input');
     const currentPassword = inputs[0].value;
@@ -408,15 +417,19 @@ function savePassword() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            showPopup();
+            showPasswordChangePopup();
             togglePasswordChange();
             // Clear password fields
             inputs.forEach(input => input.value = '');
         } else {
-            if (data.message === 'current_password_incorrect') {
-                showError('current-password-error', 'รหัสปัจุบันไม่ถูกต้อง');
+            if (data.error && data.error.includes('รหัสผ่านปัจจุบันไม่ถูกต้อง')) {
+                showError('current-password-error', 'รหัสปัจจุบันไม่ถูกต้อง');
+            } else if (data.error && data.error.includes('รหัสผ่านใหม่ต้องมีอย่างน้อย')) {
+                showError('new-password-error', data.error);
+            } else if (data.error && data.error.includes('รหัสผ่านใหม่ไม่ตรงกัน')) {
+                showError('confirm-password-error', data.error);
             } else {
-                alert('Failed to change password: ' + data.message);
+                alert('Failed to change password: ' + (data.error || 'Unknown error'));
             }
         }
     })
