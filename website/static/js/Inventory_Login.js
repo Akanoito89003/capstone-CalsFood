@@ -508,7 +508,6 @@ document.addEventListener("DOMContentLoaded", function () {
     function populateEditModal(card) {
         // Reset editMeals
         editMeals = { breakfast: [], lunch: [], dinner: [] };
-        
         // Set date
         const dateText = card.querySelector('.date-info .date').textContent;
         const [day, month, year] = dateText.replace('วันที่ ', '').split(' ');
@@ -520,42 +519,42 @@ document.addEventListener("DOMContentLoaded", function () {
         const date = `${year}-${thaiMonths[month]}-${day.padStart(2, '0')}`;
         document.getElementById('editDate').value = date;
 
+        // หา daily_id ของ card นี้
+        const dailyId = card.querySelector('.edit-btn').getAttribute('data-daily-id');
+        const mealsData = window.lastDailyMealsData && window.lastDailyMealsData[dailyId] ? window.lastDailyMealsData[dailyId] : null;
+
         // Populate meal sections
         ['breakfast', 'lunch', 'dinner'].forEach(mealType => {
             const mealSection = card.querySelector(`.meal-section.${mealType}`);
             editMeals[mealType] = [];
+            let iconUrl = null;
             if (mealSection) {
                 const mealItems = mealSection.querySelectorAll('.meal-list-item');
-                mealItems.forEach(item => {
+                mealItems.forEach((item, idx) => {
                     const name = item.querySelector('.meal-name')?.textContent?.trim() || '';
                     const caloriesText = item.querySelector('.menu-calories')?.textContent || '';
                     const caloriesMatch = caloriesText.match(/\((\d+)\s*(kcal)?\)/i);
                     const calories = caloriesMatch ? caloriesMatch[1] : '0';
                     const menuId = item.getAttribute('data-menu-id');
-                    
+                    // ดึง icon_url จาก mealsData ถ้ามี
+                    if (mealsData && mealsData[mealType] && mealsData[mealType][idx]) {
+                        iconUrl = mealsData[mealType][idx].icon_url;
+                    }
                     if (name && name !== 'เมนูยังไม่ถูกเลือก' && menuId) {
                         editMeals[mealType].push({ 
                             mymenu_id: parseInt(menuId),
                             name: name,
-                            calories: calories
+                            calories: calories,
+                            icon_url: iconUrl
                         });
                     }
                 });
             }
+            // set icon_url สำหรับ icon-selector
+            if (iconUrl) editMeals[mealType].icon_url = iconUrl;
             renderMealList(mealType);
         });
         updateTotalCaloriesEdit();
-
-        // For each mealType, set editMeals[mealType].icon_url from backend data if available
-        ['breakfast', 'lunch', 'dinner'].forEach(mealType => {
-            const mealSection = card.querySelector(`.meal-section.${mealType}`);
-            if (mealSection) {
-                const iconImg = mealSection.querySelector('.meal-image img');
-                if (iconImg) {
-                    editMeals[mealType].icon_url = iconImg.src;
-                }
-            }
-        });
         initializeIconSelectors();
     }
 
@@ -1105,7 +1104,14 @@ document.addEventListener("DOMContentLoaded", function () {
         fetch('/daily-meals')
             .then(res => res.json())
             .then(data => {
-                if (data.success) renderDailyMeals(data.dailies);
+                if (data.success) {
+                    // เก็บข้อมูล raw ไว้สำหรับใช้ใน populateEditModal
+                    window.lastDailyMealsData = {};
+                    data.dailies.forEach(daily => {
+                        window.lastDailyMealsData[daily.daily_id] = daily.meals;
+                    });
+                    renderDailyMeals(data.dailies);
+                }
             });
     }
 

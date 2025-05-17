@@ -143,6 +143,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const caloriesText = box.querySelector("p:last-of-type").textContent;
             const mainCategory = box.getAttribute('data-main-category');
             const calories = parseFloat(caloriesText.split(": ")[1].replace(" kcal", ""));
+            const valueElement = box.querySelector('p:nth-of-type(1)');
+            const ingredientValue = valueElement ? valueElement.textContent.replace('ปริมาณ: ', '') : '';
 
             if (!imgElement || !nameElement || !caloriesText || !mainCategory) return;
 
@@ -177,6 +179,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             <div class="calorie-container">
                                 <span>${calories} kcal</span>
                             </div>  
+                            <div class="value-container"><span>${ingredientValue}</span></div>
                         </div>
                         <div class="quantity-delete-container">
                             <input type="number" class="quantity-input" value="1" min="1" step="1">
@@ -591,6 +594,13 @@ document.addEventListener("DOMContentLoaded", function () {
                                 const categoryContainer = targetHeader.closest('.ingredient-category');
                                 let itemsContainer = categoryContainer.querySelector('.ingredient-items');
                                 if (!itemsContainer) return;
+                                // หา ingredient_value จาก .box
+                                const box = Array.from(document.querySelectorAll('.sum-ingredients .box')).find(b => b.querySelector('h1').textContent.trim() === ing.name);
+                                let ingredientValue = '';
+                                if (box) {
+                                    const valueElement = box.querySelector('p:nth-of-type(1)');
+                                    ingredientValue = valueElement ? valueElement.textContent.replace('ปริมาณ: ', '') : '';
+                                }
                                 // สร้าง element ingredient-item
                                 const newItem = document.createElement('div');
                                 newItem.className = 'ingredient-item';
@@ -603,6 +613,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                             <div class="calorie-container">
                                                 <span>${ing.calories}</span>
                                             </div>
+                                            <div class="value-container"><span>${ingredientValue}</span></div>
                                         </div>
                                         <div class="quantity-delete-container">
                                             <input type="number" class="quantity-input" value="1" min="1" step="1">
