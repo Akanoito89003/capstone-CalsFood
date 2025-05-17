@@ -6,27 +6,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/Layout_Logout.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/Create_Account.css') }}">
     <title>Create Account - CalsFood</title>
-    <style>
-        .error-message {
-            color: red;
-            font-size: 0.9em;
-            margin-top: 4px;
-        }
-        .input-box input.is-invalid,
-        .input-box select.is-invalid,
-        .input-box textarea.is-invalid {
-            border-color: red;
-        }
-        .gender-selection.is-invalid + .error-message {
-            display: block; /* Make gender error visible */
-        }
-    </style>
 </head>
 <body>
     <div class="topic">
         <div class="name">
             <h1>CalsFood</h1>
-            <h4>เว็บไซต์คำนวนแคลลอรี่อาหารตามสั่งไทย</h4>
+            <h4>เว็บไซต์คำนวนแคลอรี่อาหารตามสั่งไทย</h4>
         </div>
         <img src="{{ url_for('static', filename='Image/BG-topic.webp') }}">
     </div>
@@ -234,80 +219,6 @@
         </div>
     </div>
 
-    <script>
-        // Get today's date for max birthday
-        try {
-             document.getElementById('create-birthday').max = new Date().toISOString().split('T')[0];
-        } catch (e) {
-             console.error("Could not set max date for birthday input.");
-        }
-       
-        // Password visibility toggle (Keep this JS)
-        const togglePassword = document.querySelector('#togglePassword');
-        const toggleConfirmPassword = document.querySelector('#toggleConfirmPassword');
-        const password = document.querySelector('#create-password');
-        const confirmPassword = document.querySelector('#create-confirm-password');
-
-        if (togglePassword && password) {
-            togglePassword.addEventListener('click', function() {
-                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-                password.setAttribute('type', type);
-                this.src = type === 'password' ? 
-                    'https://cdn-icons-png.flaticon.com/512/2767/2767146.png' : 
-                    'https://cdn-icons-png.flaticon.com/512/709/709612.png';
-            });
-        }
-
-        if (toggleConfirmPassword && confirmPassword) {
-            toggleConfirmPassword.addEventListener('click', function() {
-                const type = confirmPassword.getAttribute('type') === 'password' ? 'text' : 'password';
-                confirmPassword.setAttribute('type', type);
-                this.src = type === 'password' ? 
-                    'https://cdn-icons-png.flaticon.com/512/2767/2767146.png' : 
-                    'https://cdn-icons-png.flaticon.com/512/709/709612.png';
-            });
-        }
-
-        // Client-side validation (Optional but recommended for better UX)
-        // Remove or comment out the client-side validation part if you ONLY want server-side errors
-        // const form = document.getElementById('signupForm');
-        // if (form) {
-        //     form.addEventListener('submit', function(event) {
-        //         let isValid = true;
-                
-        //         // Clear previous backend errors shown by client-side validation
-        //         document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
-                
-        //         // Validate email
-        //         const email = document.getElementById('create-email');
-        //         const emailError = document.getElementById('email-error');
-        //         if (!email.value || !email.value.includes('@') || !email.value.includes('.')) {
-        //             emailError.textContent = 'Please enter a valid email address';
-        //             email.classList.add('is-invalid');
-        //             isValid = false;
-        //         } else {
-        //             email.classList.remove('is-invalid');
-        //         }
-
-        //         // ... (add similar client-side validation for other fields) ...
-
-        //         // Validate password match
-        //         const passwordInput = document.getElementById('create-password');
-        //         const confirmPasswordInput = document.getElementById('create-confirm-password');
-        //         const confirmPasswordError = document.getElementById('confirm-password-error');
-        //         if (passwordInput.value !== confirmPasswordInput.value) {
-        //             confirmPasswordError.textContent = 'Passwords do not match';
-        //             confirmPasswordInput.classList.add('is-invalid');
-        //             isValid = false;
-        //         } else {
-        //             confirmPasswordInput.classList.remove('is-invalid');
-        //         }
-
-        //         if (!isValid) {
-        //             event.preventDefault(); // Prevent form submission if client-side validation fails
-        //         }
-        //     });
-        // }
-    </script>
+    <script src="{{ url_for('static', filename='js/Create_Account.js') }}"></script>
 </body>
 </html>

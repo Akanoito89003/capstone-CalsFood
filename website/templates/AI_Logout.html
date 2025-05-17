@@ -12,7 +12,7 @@
     <div class="topic">
         <div class="name">
             <h1>CalsFood</h1>
-            <h4>เว็บไซต์คำนวนแคลลอรี่อาหารตามสั่งไทย</h4>
+            <h4>เว็บไซต์คำนวนแคลอรี่อาหารตามสั่งไทย</h4>
         </div>
         <img src="{{ url_for('static', filename='Image/BG-topic.webp') }}">
     </div>
@@ -45,10 +45,11 @@
                 <div class="upload-area">
                     <img src="{{ url_for('static', filename='Image/icon-image.png') }}" class="upload-icon">
                     <input type="file" id="file-input" accept="image/*" style="display: none">
-                    <button class="upload-btn" onclick="document.getElementById('file-input').click()">อัพโหลดรูปภาพ</button>
+                    <button class="upload-btn" onclick="document.getElementById('file-input').click()">อัพโหลดรูปภาพ</button>                
                 </div>
             </div>
         </div>
+        <p class="disclaimer">หมายเหตุ : AI ที่ใช้ในการประมวลผลอาหารอาจเกิดข้อผิดพลาดได้ หากอาหารที่ระบุไม่มีอยู่ในฐานข้อมูล ระบบอาจไม่สามารถให้ผลลัพธ์ที่ถูกต้องได้ โดยสามารถใช้งานได้กับอาหารไทยจานเดียวตามสั่งเท่านั้น</p>
     </div>
 
     <script src="{{ url_for('static', filename='js/AI_Logout.js') }}"></script>

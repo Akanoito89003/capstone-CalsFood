@@ -495,6 +495,26 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+    // Sidebar toggle functionality
+    const toggleBtn = document.querySelector('.sidebar-toggle-btn');
+    const leftContent = document.querySelector('.left-content');
+    const rightContent = document.querySelector('.right-content');
+    const fixedHeader = document.querySelector('.fixed-header');
+
+    toggleBtn.addEventListener('click', function() {
+        leftContent.classList.toggle('collapsed');
+        rightContent.classList.toggle('expanded');
+        fixedHeader.classList.toggle('expanded');
+        toggleBtn.classList.toggle('collapsed');
+        
+        // Update button text based on state
+        if (leftContent.classList.contains('collapsed')) {
+            toggleBtn.textContent = '▶';
+        } else {
+            toggleBtn.textContent = '◀';
+        }
+    });
+
 
 
 

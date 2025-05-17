@@ -282,3 +282,10 @@ input:focus {
 .gender-selection.is-invalid + .error-message {
     display: block; /* Make gender error visible */
 }
+
+/* Error message styles */
+.error-message {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 4px;
+}
