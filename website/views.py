@@ -568,23 +568,31 @@ def delete_menu(menu_id):
 def get_menu_ingredients(menu_id):
     try:
         menu = MyMenu.query.get_or_404(menu_id)
-        # Join MyMenu_Ingredient and Ingredient to get name, quantity, calories
+        # Join MyMenu_Ingredient and Ingredient to get name, quantity, calories, base_calories
         rows = db.session.execute(
             text("""
-            SELECT i.ingredient_name, mi.quantity, mi.total_calories
+            SELECT i.ingredient_name, mi.quantity, mi.total_calories, i.ingredient_calories
             FROM mymenu_ingredient mi
             JOIN ingredient i ON mi.ingredient_id = i.ingredient_id
             WHERE mi.mymenu_id = :menu_id
             """),
             {'menu_id': menu_id}
         ).fetchall()
-        ingredients = [
-            {
+        ingredients = []
+        for row in rows:
+            # row[3] = i.ingredient_calories เช่น '10 kcal' หรือ '18 kcal'
+            base_calories = 0
+            if row[3]:
+                try:
+                    base_calories = float(str(row[3]).split()[0])
+                except Exception:
+                    base_calories = 0
+            ingredients.append({
                 'name': row[0],
                 'quantity': row[1],
-                'calories': row[2]
-            } for row in rows
-        ]
+                'calories': row[2],
+                'base_calories': base_calories
+            })
         return jsonify({
             'success': True,
             'ingredients': ingredients

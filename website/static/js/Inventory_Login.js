@@ -1024,7 +1024,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     <div class="detail-ingredient-row">
                                         <span class="ingredient-name">${ing.name}</span>
                                         <span class="ingredient-quantity">x${ing.quantity}</span>
-                                        <span class="ingredient-calories">${ing.calories} kcal</span>
+                                        <span class="ingredient-calories">${ing.base_calories} kcal</span>
                                     </div>
                                 `;
                             }).join('');
