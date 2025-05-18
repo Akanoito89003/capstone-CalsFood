@@ -79,10 +79,13 @@ document.addEventListener("DOMContentLoaded", function () {
         sectionTitle: document.querySelector('.section-title h1'),
         menuGrid: document.querySelector('.menu-grid'),
         deleteButtons: document.querySelectorAll('.delete-menu-btn'),
-        deleteConfirmModal: document.getElementById('deleteConfirmModal'),
+        deleteMenuConfirmModal: document.getElementById('deleteMenuConfirmModal'),
+        deleteDailyMealConfirmModal: document.getElementById('deleteDailyMealConfirmModal'),
         deleteSuccessModal: document.getElementById('deleteSuccessModal'),
-        confirmDeleteBtn: document.getElementById('confirmDelete'),
-        cancelDeleteBtn: document.getElementById('cancelDelete'),
+        confirmDeleteMenuBtn: document.getElementById('confirmDeleteMenu'),
+        cancelDeleteMenuBtn: document.getElementById('cancelDeleteMenu'),
+        confirmDeleteDailyMealBtn: document.getElementById('confirmDeleteDailyMeal'),
+        cancelDeleteDailyMealBtn: document.getElementById('cancelDeleteDailyMeal'),
         closeSuccessBtn: document.getElementById('closeSuccess'),
         sidebarToggle: document.getElementById('sidebar-toggle'),
         leftContent: document.querySelector('.left-content'),
@@ -395,12 +398,12 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById('deleteMenuName').textContent = menuName;
             menuToDelete = menuId;
             menuNameToDelete = menuName;
-            elements.deleteConfirmModal.style.display = 'flex';
+            elements.deleteMenuConfirmModal.style.display = 'flex';
         });
     });
 
-    // Handle delete confirmation
-    elements.confirmDeleteBtn.addEventListener('click', function() {
+    // Handle delete confirmation for My Menu
+    elements.confirmDeleteMenuBtn.addEventListener('click', function() {
         if (menuToDelete) {
             fetch(`/delete-menu/${menuToDelete}`, {
                 method: 'DELETE'
@@ -408,7 +411,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    elements.deleteConfirmModal.style.display = 'none';
+                    elements.deleteMenuConfirmModal.style.display = 'none';
                     elements.deleteSuccessModal.style.display = 'flex';
                     // Remove the deleted menu card from the DOM
                     const menuCard = document.querySelector(`.menu-card[data-menu-id="${menuToDelete}"]`);
@@ -428,12 +431,59 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // Cancel delete for My Menu
+    elements.cancelDeleteMenuBtn.addEventListener('click', () => {
+        elements.deleteMenuConfirmModal.style.display = 'none';
+        menuToDelete = null;
+        menuNameToDelete = '';
+    });
+
     // Delete functionality for Daily Meal
     document.querySelectorAll('.daily-meal-card .delete-btn').forEach(button => {
         button.addEventListener('click', () => {
             currentDailyMealCard = button.closest('.daily-meal-card');
-            elements.deleteConfirmModal.style.display = 'flex';
+            elements.deleteDailyMealConfirmModal.style.display = 'flex';
         });
+    });
+
+    // Handle delete confirmation for Daily Meal
+    elements.confirmDeleteDailyMealBtn.addEventListener('click', () => {
+        if (currentDailyMealCard) {
+            const dailyId = currentDailyMealCard.querySelector('.delete-btn').getAttribute('data-daily-id');
+            fetch(`/daily-meals/${dailyId}`, {method: 'DELETE'})
+                .then(res => res.json())
+                .then(data => {
+                    elements.deleteDailyMealConfirmModal.style.display = 'none';
+                    if (data.success) {
+                        fetchDailyMeals();
+                        showSuccessDailyMealModal('ลบมื้ออาหารสำเร็จ');
+                    } else {
+                        alert(data.error || 'เกิดข้อผิดพลาดขณะลบมื้ออาหาร');
+                    }
+                });
+        }
+    });
+
+    // Cancel delete for Daily Meal
+    elements.cancelDeleteDailyMealBtn.addEventListener('click', () => {
+        elements.deleteDailyMealConfirmModal.style.display = 'none';
+        currentDailyMealCard = null;
+    });
+
+    // Close modals when clicking outside
+    window.addEventListener('click', (e) => {
+        if (e.target === elements.deleteMenuConfirmModal) {
+            elements.deleteMenuConfirmModal.style.display = 'none';
+            menuToDelete = null;
+            menuNameToDelete = '';
+        }
+        if (e.target === elements.deleteDailyMealConfirmModal) {
+            elements.deleteDailyMealConfirmModal.style.display = 'none';
+            currentDailyMealCard = null;
+        }
+        if (e.target === elements.deleteSuccessModal) {
+            elements.deleteSuccessModal.style.display = 'none';
+        }
     });
 
     // State for edit modal
@@ -608,201 +658,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Setup add meal buttons on page load
     setupAddMealBtns();
-
-    // Delete functionality for Daily Meal
-    document.querySelectorAll('.daily-meal-card .delete-btn').forEach(button => {
-        button.addEventListener('click', () => {
-            currentDailyMealCard = button.closest('.daily-meal-card');
-            elements.deleteConfirmModal.style.display = 'flex';
-        });
-    });
-
-    // Close success modal
-    elements.closeSuccessBtn.addEventListener('click', () => {
-        elements.deleteSuccessModal.style.display = 'none';
-    });
-
-    // Close modals when clicking outside
-    window.addEventListener('click', (e) => {
-        if (e.target === elements.deleteConfirmModal) {
-            elements.deleteConfirmModal.style.display = 'none';
-            menuToDelete = null;
-        }
-        if (e.target === elements.deleteSuccessModal) {
-            elements.deleteSuccessModal.style.display = 'none';
-        }
-    });
-
-    // Sidebar toggle functionality
-    elements.sidebarToggle.addEventListener('click', () => {
-        elements.leftContent.classList.toggle('collapsed');
-        elements.rightContent.classList.toggle('expanded');
-        elements.fixedHeader.classList.toggle('expanded');
-        elements.sidebarToggle.classList.toggle('collapsed');
-        elements.sidebarToggle.textContent = elements.sidebarToggle.classList.contains('collapsed') ? '▶' : '◀';
-    });
-
-    // เปลี่ยนจากการใช้ window.currentUserId เป็นการดึงค่า user_id จาก HTML element
-    function getCurrentUserId() {
-        // ดึงค่า user_id จาก hidden input ที่เราจะเพิ่มใน HTML
-        return document.getElementById('current-user-id').value;
-    }
-
-    // แก้ไขส่วนที่ใช้ userId
-    function setUserMultiplierCookie(multiplier) {
-        const userId = getCurrentUserId();
-        const expirationDate = new Date();
-        expirationDate.setDate(expirationDate.getDate() + 30);
-        document.cookie = `activityMultiplier_${userId}=${multiplier};expires=${expirationDate.toUTCString()};path=/`;
-    }
-
-    function getUserMultiplierCookie() {
-        const userId = getCurrentUserId();
-        const name = `activityMultiplier_${userId}=`;
-        const decodedCookie = decodeURIComponent(document.cookie);
-        const ca = decodedCookie.split(';');
-        for(let i = 0; i < ca.length; i++) {
-            let c = ca[i].trim();
-            if (c.indexOf(name) === 0) {
-                return parseFloat(c.substring(name.length, c.length));
-            }
-        }
-        return null;
-    }
-
-    const activityButtons = document.querySelectorAll('.activity-btn');
-    activityButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            activityButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            const multiplier = parseFloat(button.dataset.multiplier);
-            updateTDEE(multiplier);
-            setUserMultiplierCookie(multiplier);
-            // Debug
-            console.log('Saved multiplier:', multiplier);
-        });
-    });
-
-    // --- Initialize TDEE calculation when the page loads ---
-    let multiplier = getUserMultiplierCookie();
-    if (!multiplier) {
-        multiplier = 1.2; // default
-        setUserMultiplierCookie(multiplier);
-        // disable ปุ่มอื่นชั่วคราว
-        document.querySelectorAll('.activity-btn').forEach(btn => {
-            if (btn.dataset.multiplier !== '1.2') {
-                btn.disabled = true;
-                btn.style.opacity = 0.5;
-            }
-        });
-        // เมื่อ user กดปุ่มอื่น ให้ enable ทุกปุ่ม
-        document.querySelectorAll('.activity-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.activity-btn').forEach(b => {
-                    b.disabled = false;
-                    b.style.opacity = 1;
-                });
-            }, { once: true });
-        });
-    }
-    const btn = document.querySelector(`.activity-btn[data-multiplier="${multiplier}"]`);
-    if (btn) {
-        btn.classList.add('active');
-        updateTDEE(multiplier);
-    }
-    // Debug
-    console.log('Loaded multiplier:', multiplier);
-
-    // Update TDEE calculation
-    function updateTDEE(multiplier) {
-        const userWeight = parseFloat(document.querySelector('.user-weight')?.textContent || '0');
-        const userHeight = parseFloat(document.querySelector('.user-height')?.textContent || '0');
-        const userBirthday = document.querySelector('.user-birthday')?.textContent || '';
-        const userGender = document.querySelector('.user-gender')?.textContent || '';
-
-        console.log('DEBUG:', { userWeight, userHeight, userBirthday, userGender });
-
-        const minCaloriesElement = document.querySelector('.range-item:first-child .value');
-        const maxCaloriesElement = document.querySelector('.range-item:last-child .value');
-
-        let age = 0;
-        if (userBirthday) {
-            const birthDate = new Date(userBirthday);
-            if (!isNaN(birthDate.getTime())) {
-                const today = new Date();
-                age = today.getFullYear() - birthDate.getFullYear();
-                const monthDiff = today.getMonth() - birthDate.getMonth();
-                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                    age--;
-                }
-            } else {
-                console.log('วันเกิด format ผิด:', userBirthday);
-            }
-        }
-
-        let bmr = 0;
-        if (userGender === 'ชาย'|| userGender === 'Male'|| userGender === 'male') {
-            bmr = 66 + (13.7 * userWeight) + (5 * userHeight) - (6.8 * age);
-        } else if (userGender === 'หญิง' || userGender === 'Female' || userGender === 'female') {
-            bmr = 665 + (9.6 * userWeight) + (1.8 * userHeight) - (4.7 * age);
-        }
-
-        const tdee = Math.round(bmr * multiplier);
-        const minCalories = Math.round(bmr);
-        const maxCalories = Math.round(tdee);
-
-        if (minCaloriesElement) minCaloriesElement.textContent = minCalories.toLocaleString();
-        if (maxCaloriesElement) maxCaloriesElement.textContent = maxCalories.toLocaleString();
-
-        console.log('BMR:', bmr, 'TDEE:', tdee, 'age:', age);
-    }
-
-    // Daily Meal Edit functionality
-    function setupEditButtons() {
-        document.querySelectorAll('.edit-btn').forEach(button => {
-            button.onclick = () => {
-                currentDailyMealCard = button.closest('.daily-meal-card');
-                isEdit = true;
-                populateEditModal(currentDailyMealCard);
-                document.querySelector('#editDailyMealModal .modal-header h2').textContent = 'แก้ไขมื้ออาหาร';
-                document.getElementById('editDailyMealModal').style.display = 'flex';
-            };
-        });
-    }
-
-    // Handle meal deletion (delete icon in edit modal)
-    document.querySelectorAll('.meal-section-edit .delete-meal-btn').forEach(button => {
-        button.addEventListener('click', () => {
-            const mealSection = button.closest('.meal-section-edit');
-            mealSection.querySelector('.meal-name').textContent = 'เมนูยังไม่ถูกเลือก';
-            mealSection.querySelector('.meal-calories').textContent = '0 kcal';
-            mealSection.classList.add('empty');
-            // Show select-new-meal-btn, hide delete-meal-btn
-            mealSection.querySelector('.select-new-meal-btn').style.display = 'flex';
-            button.style.display = 'none';
-            updateTotalCaloriesEdit();
-        });
-    });
-
-    // Handle icon selection
-    document.querySelectorAll('.icon-options img').forEach(icon => {
-        icon.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const iconSelector = icon.closest('.icon-selector');
-            const mainIcon = iconSelector.querySelector('.meal-icon');
-            mainIcon.src = icon.src;
-            mainIcon.dataset.icon = icon.dataset.icon;
-        });
-    });
-
-    // Handle menu selection
-    document.querySelectorAll('.select-new-meal-btn').forEach(button => {
-        button.addEventListener('click', () => {
-            const mealSection = button.closest('.meal-section-edit');
-            selectedMealType = mealSection.classList[1]; // breakfast, lunch, or dinner
-            showMenuSelection();
-        });
-    });
 
     // Show menu selection modal
     function showMenuSelection() {
@@ -1208,9 +1063,9 @@ document.addEventListener("DOMContentLoaded", function () {
             btn.onclick = function() {
                 const dailyId = btn.getAttribute('data-daily-id');
                 // Popup แทน confirm
-                const confirmModal = document.getElementById('deleteConfirmModal');
+                const confirmModal = document.getElementById('deleteDailyMealConfirmModal');
                 confirmModal.style.display = 'flex';
-                document.getElementById('confirmDelete').onclick = function() {
+                document.getElementById('confirmDeleteDailyMeal').onclick = function() {
                     fetch(`/daily-meals/${dailyId}`, {method: 'DELETE'})
                         .then(res => res.json())
                         .then(data => {
@@ -1223,7 +1078,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             }
                         });
                 };
-                document.getElementById('cancelDelete').onclick = function() {
+                document.getElementById('cancelDeleteDailyMeal').onclick = function() {
                     confirmModal.style.display = 'none';
                 };
             };
@@ -1282,5 +1137,184 @@ document.addEventListener("DOMContentLoaded", function () {
     // Call updateBMIDisplay when the page loads
     document.addEventListener('DOMContentLoaded', function() {
         updateBMIDisplay();
+    });
+
+    // Sidebar toggle functionality
+    elements.sidebarToggle.addEventListener('click', () => {
+        elements.leftContent.classList.toggle('collapsed');
+        elements.rightContent.classList.toggle('expanded');
+        elements.fixedHeader.classList.toggle('expanded');
+        elements.sidebarToggle.classList.toggle('collapsed');
+        elements.sidebarToggle.textContent = elements.sidebarToggle.classList.contains('collapsed') ? '▶' : '◀';
+    });
+
+    // เปลี่ยนจากการใช้ window.currentUserId เป็นการดึงค่า user_id จาก HTML element
+    function getCurrentUserId() {
+        // ดึงค่า user_id จาก hidden input ที่เราจะเพิ่มใน HTML
+        return document.getElementById('current-user-id').value;
+    }
+
+    // แก้ไขส่วนที่ใช้ userId
+    function setUserMultiplierCookie(multiplier) {
+        const userId = getCurrentUserId();
+        const expirationDate = new Date();
+        expirationDate.setDate(expirationDate.getDate() + 30);
+        document.cookie = `activityMultiplier_${userId}=${multiplier};expires=${expirationDate.toUTCString()};path=/`;
+    }
+
+    function getUserMultiplierCookie() {
+        const userId = getCurrentUserId();
+        const name = `activityMultiplier_${userId}=`;
+        const decodedCookie = decodeURIComponent(document.cookie);
+        const ca = decodedCookie.split(';');
+        for(let i = 0; i < ca.length; i++) {
+            let c = ca[i].trim();
+            if (c.indexOf(name) === 0) {
+                return parseFloat(c.substring(name.length, c.length));
+            }
+        }
+        return null;
+    }
+
+    const activityButtons = document.querySelectorAll('.activity-btn');
+    activityButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            activityButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            const multiplier = parseFloat(button.dataset.multiplier);
+            updateTDEE(multiplier);
+            setUserMultiplierCookie(multiplier);
+            // Debug
+            console.log('Saved multiplier:', multiplier);
+        });
+    });
+
+    // --- Initialize TDEE calculation when the page loads ---
+    let multiplier = getUserMultiplierCookie();
+    if (!multiplier) {
+        multiplier = 1.2; // default
+        setUserMultiplierCookie(multiplier);
+        // disable ปุ่มอื่นชั่วคราว
+        document.querySelectorAll('.activity-btn').forEach(btn => {
+            if (btn.dataset.multiplier !== '1.2') {
+                btn.disabled = true;
+                btn.style.opacity = 0.5;
+            }
+        });
+    }
+
+    // เพิ่ม event listener สำหรับทุกปุ่ม activity
+    document.querySelectorAll('.activity-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Enable ทุกปุ่มเมื่อกดปุ่มใดก็ได้
+            document.querySelectorAll('.activity-btn').forEach(b => {
+                b.disabled = false;
+                b.style.opacity = 1;
+            });
+        });
+    });
+
+    const btn = document.querySelector(`.activity-btn[data-multiplier="${multiplier}"]`);
+    if (btn) {
+        btn.classList.add('active');
+        updateTDEE(multiplier);
+    }
+    // Debug
+    console.log('Loaded multiplier:', multiplier);
+
+    // Update TDEE calculation
+    function updateTDEE(multiplier) {
+        const userWeight = parseFloat(document.querySelector('.user-weight')?.textContent || '0');
+        const userHeight = parseFloat(document.querySelector('.user-height')?.textContent || '0');
+        const userBirthday = document.querySelector('.user-birthday')?.textContent || '';
+        const userGender = document.querySelector('.user-gender')?.textContent || '';
+
+        console.log('DEBUG:', { userWeight, userHeight, userBirthday, userGender });
+
+        const minCaloriesElement = document.querySelector('.range-item:first-child .value');
+        const maxCaloriesElement = document.querySelector('.range-item:last-child .value');
+
+        let age = 0;
+        if (userBirthday) {
+            const birthDate = new Date(userBirthday);
+            if (!isNaN(birthDate.getTime())) {
+                const today = new Date();
+                age = today.getFullYear() - birthDate.getFullYear();
+                const monthDiff = today.getMonth() - birthDate.getMonth();
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+            } else {
+                console.log('วันเกิด format ผิด:', userBirthday);
+            }
+        }
+
+        let bmr = 0;
+        if (userGender === 'ชาย'|| userGender === 'Male'|| userGender === 'male') {
+            bmr = 66 + (13.7 * userWeight) + (5 * userHeight) - (6.8 * age);
+        } else if (userGender === 'หญิง' || userGender === 'Female' || userGender === 'female') {
+            bmr = 665 + (9.6 * userWeight) + (1.8 * userHeight) - (4.7 * age);
+        }
+
+        const tdee = Math.round(bmr * multiplier);
+        const minCalories = Math.round(bmr);
+        const maxCalories = Math.round(tdee);
+
+        if (minCaloriesElement) minCaloriesElement.textContent = minCalories.toLocaleString();
+        if (maxCaloriesElement) maxCaloriesElement.textContent = maxCalories.toLocaleString();
+
+        console.log('BMR:', bmr, 'TDEE:', tdee, 'age:', age);
+    }
+
+    // Daily Meal Edit functionality
+    function setupEditButtons() {
+        document.querySelectorAll('.edit-btn').forEach(button => {
+            button.onclick = () => {
+                currentDailyMealCard = button.closest('.daily-meal-card');
+                isEdit = true;
+                populateEditModal(currentDailyMealCard);
+                document.querySelector('#editDailyMealModal .modal-header h2').textContent = 'แก้ไขมื้ออาหาร';
+                document.getElementById('editDailyMealModal').style.display = 'flex';
+            };
+        });
+    }
+
+    // Handle meal deletion (delete icon in edit modal)
+    document.querySelectorAll('.meal-section-edit .delete-meal-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const mealSection = button.closest('.meal-section-edit');
+            mealSection.querySelector('.meal-name').textContent = 'เมนูยังไม่ถูกเลือก';
+            mealSection.querySelector('.meal-calories').textContent = '0 kcal';
+            mealSection.classList.add('empty');
+            // Show select-new-meal-btn, hide delete-meal-btn
+            mealSection.querySelector('.select-new-meal-btn').style.display = 'flex';
+            button.style.display = 'none';
+            updateTotalCaloriesEdit();
+        });
+    });
+
+    // Handle icon selection
+    document.querySelectorAll('.icon-options img').forEach(icon => {
+        icon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const iconSelector = icon.closest('.icon-selector');
+            const mainIcon = iconSelector.querySelector('.meal-icon');
+            mainIcon.src = icon.src;
+            mainIcon.dataset.icon = icon.dataset.icon;
+        });
+    });
+
+    // Handle menu selection
+    document.querySelectorAll('.select-new-meal-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const mealSection = button.closest('.meal-section-edit');
+            selectedMealType = mealSection.classList[1]; // breakfast, lunch, or dinner
+            showMenuSelection();
+        });
+    });
+
+    // Close success modal
+    elements.closeSuccessBtn.addEventListener('click', () => {
+        elements.deleteSuccessModal.style.display = 'none';
     });
 });
