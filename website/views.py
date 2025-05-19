@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, flash, jsonify, redirect, url_for
 from flask_login import login_required, current_user
-from .models import User, Category, Ingredient, MenuAuto, MyMenu, Daily, Daily_MyMenu
+from .models import User, Category, Ingredient, MenuAuto, MyMenu, Daily, Daily_MyMenu, MyMenu_Ingredient
 from . import db
 import json
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -10,7 +10,8 @@ from PIL import Image
 import io
 from .food_predictor import ThaiFoodPredictor
 from datetime import datetime
-from sqlalchemy import text
+from sqlalchemy import exc as SQLAlchemyError
+from sqlalchemy import text  # ต้องเพิ่ม import นี้
 
 
 views = Blueprint('views', __name__)
@@ -369,9 +370,10 @@ def inventory():
     bmi_status = None
     if current_user.user_weight and current_user.user_height:
         try:
+             # แปลงค่าจาก string เป็น float
             weight = float(current_user.user_weight)
             height = float(current_user.user_height) / 100  # แปลงจาก cm เป็น m
-            bmi = round(weight / (height * height), 1)
+            bmi = round(weight / (height * height), 1) # คำนวณ BMI = น้ำหนัก(kg) / (ส่วนสูง(m))²
             
             # กำหนดสถานะ BMI
             if bmi < 18.5:
@@ -414,52 +416,6 @@ def remove_from_inventory(menu_id):
         return jsonify({'success': False, 'error': 'Menu not found'})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
-
-@views.route('/menu/<int:menu_id>')
-@login_required
-def menu_details(menu_id):
-    """แสดงรายละเอียดของเมนู"""
-    menu = MenuAuto.query.get_or_404(menu_id)
-    return render_template('menu_details.html', menu=menu)
-
-@views.route('/select', methods=['GET', 'POST'])
-@login_required
-def select_menu():
-    """แสดงหน้าเลือกเมนูและบันทึกเมนูที่เลือก"""
-    if request.method == 'POST':
-        menu_name = request.form.get('menu_name')
-        ingredient_ids = request.form.getlist('ingredients')
-        
-        # สร้าง UserMenu ใหม่
-        new_user_menu = MyMenu(
-            mymenu_name=menu_name,
-            user_id=current_user.user_id
-        )
-        db.session.add(new_user_menu)
-        
-        # เพิ่มวัตถุดิบที่เลือก
-        if ingredient_ids:
-            ingredients = Ingredient.query.filter(Ingredient.ingredient_id.in_(ingredient_ids)).all()
-            new_user_menu.ingredients.extend(ingredients)
-        
-        try:
-            db.session.commit()
-            flash('เมนูถูกบันทึกเรียบร้อยแล้ว!', category='success')
-            return redirect(url_for('views.inventory'))
-        except Exception as e:
-            db.session.rollback()
-            flash('เกิดข้อผิดพลาดในการบันทึกเมนู', category='error')
-            print(e)  # สำหรับ debug
-    
-    # GET request: แสดงหน้าฟอร์มพร้อมรายการเมนูและวัตถุดิบ
-    menus = MenuAuto.query.all()
-    ingredients = Ingredient.query.all()
-    return render_template(
-        "select_menu.html",  # ต้องสร้างไฟล์ template ใหม่
-        user=current_user,
-        menus=menus,
-        ingredients=ingredients
-    )
 
 @views.route('/check-current-password', methods=['POST'])
 @login_required
@@ -567,52 +523,68 @@ def delete_menu(menu_id):
 @login_required
 def get_menu_ingredients(menu_id):
     try:
-        menu = MyMenu.query.get_or_404(menu_id)
-        # Join MyMenu_Ingredient and Ingredient to get name, quantity, calories, base_calories
-        rows = db.session.execute(
-            text("""
-            SELECT i.ingredient_name, mi.quantity, mi.total_calories, i.ingredient_calories
-            FROM mymenu_ingredient mi
-            JOIN ingredient i ON mi.ingredient_id = i.ingredient_id
-            WHERE mi.mymenu_id = :menu_id
-            """),
-            {'menu_id': menu_id}
-        ).fetchall()
+        menu = MyMenu.query.get(menu_id)
+        if not menu:
+            return jsonify({
+                'success': False,
+                'error': 'ไม่พบเมนูที่ต้องการ'
+            }), 404
+        
+        rows = db.session.query(
+            Ingredient.ingredient_name,
+            MyMenu_Ingredient.quantity,
+            MyMenu_Ingredient.total_calories,
+            Ingredient.ingredient_calories
+        ).join(
+            Ingredient,
+            MyMenu_Ingredient.ingredient_id == Ingredient.ingredient_id
+        ).filter(
+            MyMenu_Ingredient.mymenu_id == menu_id
+        ).all()
+
         ingredients = []
         for row in rows:
-            # row[3] = i.ingredient_calories เช่น '10 kcal' หรือ '18 kcal'
             base_calories = 0
             if row[3]:
                 try:
-                    base_calories = float(str(row[3]).split()[0])
-                except Exception:
+                    calories_str = str(row[3]).split()[0]
+                    base_calories = float(calories_str)
+                except (ValueError, IndexError):
                     base_calories = 0
+
             ingredients.append({
-                'name': row[0],
-                'quantity': row[1],
-                'calories': row[2],
+                'name': row[0] or '',
+                'quantity': row[1] or 0,
+                'calories': row[2] or 0,
                 'base_calories': base_calories
             })
+
         return jsonify({
             'success': True,
             'ingredients': ingredients
-        })
+        }), 200
+
     except Exception as e:
+        db.session.rollback()
         return jsonify({
             'success': False,
             'error': str(e)
         }), 500
 
+# ฟังก์ชันสำหรับดึงข้อมูลมื้ออาหารประจำวัน
 @views.route('/daily-meals', methods=['GET'])
 @login_required
 def get_daily_meals():
-    check_and_fix_auto_increment()  # เพิ่มการเรียกใช้ที่นี่
+    check_and_fix_auto_increment()  # ตรวจสอบและแก้ไข auto-increment ถ้าจำเป็น
+    # ดึงข้อมูล daily ของผู้ใช้ปัจจุบัน เรียงตามวันที่ล่าสุด
     dailies = Daily.query.filter_by(user_id=current_user.user_id).order_by(Daily.daily_createdate.desc()).all()
     result = []
     for daily in dailies:
+        # สร้างโครงสร้างข้อมูลสำหรับแต่ละมื้อ
         meals = {'breakfast': [], 'lunch': [], 'dinner': []}
         for link in daily.mymenus:
             if link.mymenu:
+                # ถ้ามีเมนู ให้เพิ่มข้อมูลเมนู
                 meals[link.menu_type].append({
                     'mymenu_id': link.mymenu_id,
                     'name': link.mymenu.mymenu_name,
@@ -620,12 +592,14 @@ def get_daily_meals():
                     'icon_url': link.icon_url
                 })
             else:
+                # ถ้าไม่มีเมนู (ถูกลบไป) ให้แสดงข้อความแจ้งเตือน
                 meals[link.menu_type].append({
                     'mymenu_id': link.mymenu_id,
                     'name': '(เมนูถูกลบหรือข้อมูลไม่สมบูรณ์)',
                     'calories': 0,
                     'icon_url': link.icon_url
                 })
+        # เพิ่มข้อมูลวันและเมนูทั้งหมดเข้าไปในผลลัพธ์
         result.append({
             'daily_id': daily.daily_id,
             'date': daily.daily_createdate.strftime('%Y-%m-%d'),
@@ -633,21 +607,26 @@ def get_daily_meals():
         })
     return jsonify({'success': True, 'dailies': result})
 
+# ฟังก์ชันสำหรับสร้างมื้ออาหารประจำวันใหม่
 @views.route('/daily-meals', methods=['POST'])
 @login_required
 def create_daily_meal():
+    # รับข้อมูลจาก request
     data = request.get_json()
     date_str = data.get('date')
     meals = data.get('meals', {})
     try:
+        # แปลงวันที่จาก string เป็น datetime object
         date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+        # สร้าง daily record ใหม่
         daily = Daily(daily_createdate=date_obj, user_id=current_user.user_id)
         db.session.add(daily)
-        db.session.flush()  # เพื่อให้ daily_id ถูกสร้าง
+        db.session.flush()  # สร้าง daily_id
         for meal_type in ['breakfast', 'lunch', 'dinner']:
             for menu in meals.get(meal_type, []):
-                # Use default empty meal icon if no icon_url provided
+                # ใช้ไอคอนเริ่มต้นถ้าไม่มี icon_url
                 icon_url = menu.get('icon_url') or "https://cdn-icons-png.flaticon.com/512/1410/1410532.png"
+                # สร้างความสัมพันธ์ระหว่าง daily และ menu
                 link = Daily_MyMenu(
                     daily_id=daily.daily_id,
                     mymenu_id=menu['mymenu_id'],
@@ -661,23 +640,26 @@ def create_daily_meal():
         db.session.rollback()
         return jsonify({'success': False, 'error': str(e)})
 
+# ฟังก์ชันสำหรับอัพเดตมื้ออาหารประจำวัน
 @views.route('/daily-meals/<int:daily_id>', methods=['PUT'])
 @login_required
 def update_daily_meal(daily_id):
     data = request.get_json()
     meals = data.get('meals', {})
     try:
+        # ดึงข้อมูล daily ที่ต้องการอัพเดต
         daily = Daily.query.get_or_404(daily_id)
-        # date จาก frontend
+        # อัพเดตวันที่ถ้ามีการส่งมา
         date_str = data.get('date')
         if date_str:
             daily.daily_createdate = datetime.strptime(date_str, '%Y-%m-%d')
-        # ลบ Daily_MyMenu เดิม
+        # ลบความสัมพันธ์เก่าทั้งหมด
         Daily_MyMenu.query.filter_by(daily_id=daily_id).delete()
         for meal_type in ['breakfast', 'lunch', 'dinner']:
             for menu in meals.get(meal_type, []):
-                # Use default empty meal icon if no icon_url provided
+                # ใช้ไอคอนเริ่มต้นถ้าไม่มี icon_url
                 icon_url = menu.get('icon_url') or "https://cdn-icons-png.flaticon.com/512/1410/1410532.png"
+                # สร้างความสัมพันธ์ใหม่
                 link = Daily_MyMenu(
                     daily_id=daily_id,
                     mymenu_id=menu['mymenu_id'],
@@ -691,17 +673,18 @@ def update_daily_meal(daily_id):
         db.session.rollback()
         return jsonify({'success': False, 'error': str(e)})
 
+# ฟังก์ชันสำหรับลบมื้ออาหารประจำวัน
 @views.route('/daily-meals/<int:daily_id>', methods=['DELETE'])
 @login_required
 def delete_daily_meal(daily_id):
     try:
+        # ดึงข้อมูล daily ที่ต้องการลบ
         daily = Daily.query.get_or_404(daily_id)
         db.session.delete(daily)
         db.session.commit()
         
         # ตรวจสอบว่าถ้าไม่มีข้อมูล daily แล้ว ให้รีเซ็ต auto-increment
         if Daily.query.count() == 0:
-            # รีเซ็ต auto-increment counter สำหรับตาราง daily และ daily_mymenu
             try:
                 # ใช้ TRUNCATE TABLE เพื่อลบข้อมูลและรีเซ็ต auto-increment
                 db.session.execute(text('TRUNCATE TABLE daily'))
@@ -709,7 +692,7 @@ def delete_daily_meal(daily_id):
                 db.session.commit()
             except Exception as e:
                 print(f"Error resetting auto-increment: {str(e)}")
-                # ถ้า TRUNCATE ไม่สำเร็จ ให้ใช้วิธีอื่น
+                # ถ้า TRUNCATE ไม่สำเร็จ ให้ใช้ ALTER TABLE
                 try:
                     # ใช้ ALTER TABLE แบบ MySQL
                     db.session.execute(text('ALTER TABLE daily AUTO_INCREMENT = 1'))
@@ -723,16 +706,17 @@ def delete_daily_meal(daily_id):
         db.session.rollback()
         return jsonify({'success': False, 'error': str(e)})
 
-# เพิ่มฟังก์ชันใหม่สำหรับตรวจสอบและแก้ไข auto-increment
+# ฟังก์ชันสำหรับตรวจสอบและแก้ไข auto-increment
 def check_and_fix_auto_increment():
     try:
-        # ตรวจสอบว่ามี daily_id ที่หายไปหรือไม่
+        # ดึงข้อมูล daily ทั้งหมดเรียงตาม ID
         dailies = Daily.query.order_by(Daily.daily_id).all()
         if dailies:
             expected_id = 1
+            # ตรวจสอบว่า ID ต่อเนื่องหรือไม่
             for daily in dailies:
                 if daily.daily_id != expected_id:
-                    # ถ้า daily_id ไม่ต่อเนื่อง ให้แก้ไข
+                    # ถ้าไม่ต่อเนื่อง ให้แก้ไข ID
                     daily.daily_id = expected_id
                 expected_id += 1
             db.session.commit()

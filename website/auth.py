@@ -15,24 +15,27 @@ def login():
     - POST: ตรวจสอบข้อมูลและทำการล็อกอิน
     """
     if request.method == 'POST':
+        # รับข้อมูลจากฟอร์ม
         email = request.form.get('email')
         password = request.form.get('password')
         remember = True if request.form.get('remember') else False
         
+        # ค้นหาผู้ใช้จากอีเมล
         user = User.query.filter_by(email=email).first()
         
         if user:
+            # ตรวจสอบรหัสผ่าน
             if check_password_hash(user.password, password):
-                flash('Logged in successfully!', category='success')
-                session.permanent = True
-                login_user(user, remember=remember)
+                flash('ล็อกอินสำเร็จ!', category='success')
+                session.permanent = True  # ตั้งค่า session ให้คงอยู่ถาวร
+                login_user(user, remember=remember)  # ทำการล็อกอินผู้ใช้
                 return redirect(url_for('views.home'))
             else:
                 return redirect(url_for('auth.login', password_error='รหัสผ่านไม่ถูกต้อง'))
         else:
             return redirect(url_for('auth.login', email_error='อีเมลไม่ถูกต้อง'))
     
-    # Get error messages from URL parameters
+    # รับข้อความ error จากพารามิเตอร์ URL
     email_error = request.args.get('email_error', '')
     password_error = request.args.get('password_error', '')
     
@@ -41,17 +44,17 @@ def login():
 @auth.route('/logout')
 @login_required
 def logout():
-    # ลบ session
+    # ลบข้อมูล session ทั้งหมด
     session.clear()
     # ลบ remember cookie
     logout_user()
-    return redirect(url_for('views.home'))  # เปลี่ยนจาก views.home เป็น views.home_logout
+    return redirect(url_for('views.home'))
 
 @auth.route('/signup', methods=['GET', 'POST'])
 def signup():
-    errors = {}
+    errors = {}  # เก็บข้อผิดพลาดที่พบ
     if request.method == 'POST':
-        # Get form data
+        # รับข้อมูลจากฟอร์ม
         email = request.form.get('email')
         Username = request.form.get('Username')
         user_birthday = request.form.get('user_birthday')
@@ -61,62 +64,63 @@ def signup():
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
 
-        # --- Start Validation --- 
-        # Validate email format
+        # --- เริ่มการตรวจสอบข้อมูล --- 
+        # ตรวจสอบรูปแบบอีเมล
         if not email or '@' not in email or '.' not in email:
-            errors['email'] = 'Please enter a valid email address.'
+            errors['email'] = 'กรุณากรอกอีเมลให้ถูกต้อง'
         else:
-            # Check if email already exists (only if format is valid)
+            # ตรวจสอบว่าอีเมลซ้ำหรือไม่
             user = User.query.filter_by(email=email).first()
             if user:
-                errors['email'] = 'Email already exists. Please use a different email.'
+                errors['email'] = 'อีเมลนี้มีผู้ใช้งานแล้ว กรุณาใช้อีเมลอื่น'
             
-        # Validate username
+        # ตรวจสอบชื่อผู้ใช้
         if not Username or len(Username.strip()) < 2:
-            errors['username'] = 'Username must be at least 2 characters long.'
+            errors['username'] = 'ชื่อผู้ใช้ต้องมีความยาวอย่างน้อย 2 ตัวอักษร'
             
-        # Validate height and weight
+        # ตรวจสอบส่วนสูงและน้ำหนัก
         try:
             h = float(user_height)
             w = float(user_weight)
             if h <= 0:
-                 errors['height'] = 'Height must be a positive number.'
+                 errors['height'] = 'ส่วนสูงต้องเป็นจำนวนบวก'
             if w <= 0:
-                 errors['weight'] = 'Weight must be a positive number.'
+                 errors['weight'] = 'น้ำหนักต้องเป็นจำนวนบวก'
         except (ValueError, TypeError):
             if not user_height:
-                errors['height'] = 'Height is required.'
+                errors['height'] = 'กรุณากรอกส่วนสูง'
             else:
-                errors['height'] = 'Please enter a valid number for height.'
+                errors['height'] = 'กรุณากรอกส่วนสูงเป็นตัวเลข'
             if not user_weight:
-                 errors['weight'] = 'Weight is required.'
+                 errors['weight'] = 'กรุณากรอกน้ำหนัก'
             else:
-                 errors['weight'] = 'Please enter a valid number for weight.'
+                 errors['weight'] = 'กรุณากรอกน้ำหนักเป็นตัวเลข'
             
-        # Validate password
+        # ตรวจสอบรหัสผ่าน
         if not password1 or len(password1) < 7:
-            errors['password'] = 'Password must be at least 7 characters long.'
+            errors['password'] = 'รหัสผ่านต้องมีความยาวอย่างน้อย 7 ตัวอักษร'
         if password1 != password2:
-            errors['confirm_password'] = 'Passwords do not match.'
+            errors['confirm_password'] = 'รหัสผ่านไม่ตรงกัน'
             
-        # Validate gender
+        # ตรวจสอบเพศ
         if not user_gender or user_gender not in ['Male', 'Female']:
-            errors['gender'] = 'Please select a valid gender.'
+            errors['gender'] = 'กรุณาเลือกเพศ'
             
-        # Validate birthday
+        # ตรวจสอบวันเกิด
         if not user_birthday:
-            errors['birthday'] = 'Please enter your birthday.'
+            errors['birthday'] = 'กรุณากรอกวันเกิด'
         else:
-            # Check if birthday is in current year
+            # ตรวจสอบว่าวันเกิดไม่ใช่ปีปัจจุบันหรืออนาคต
             current_year = datetime.now().year
             birthday_year = datetime.strptime(user_birthday, '%Y-%m-%d').year
             if birthday_year >= current_year:
-                errors['birthday'] = 'Birthday cannot be in the current year or future.'
-        # --- End Validation --- 
+                errors['birthday'] = 'วันเกิดไม่สามารถเป็นปีปัจจุบันหรืออนาคต'
+        # --- จบการตรวจสอบข้อมูล --- 
 
-        # If no errors, create user
+        # ถ้าไม่มีข้อผิดพลาด ให้สร้างผู้ใช้ใหม่
         if not errors:
             try:
+                # สร้างผู้ใช้ใหม่
                 new_user = User(
                     email=email,
                     Username=Username,
@@ -129,22 +133,17 @@ def signup():
                 db.session.add(new_user)
                 db.session.commit()
                 login_user(new_user, remember=True)
-                flash('Account created successfully! Welcome to CalsFood!', category='success')
-                # Redirect to a different page after successful signup
-                # Decide where to redirect, e.g., home_login or a profile page
-                return redirect(url_for('views.home')) # Example redirect
+                flash('สร้างบัญชีสำเร็จ! ยินดีต้อนรับสู่ CalsFood!', category='success')
+                return redirect(url_for('views.home'))
             except Exception as e:
-                db.session.rollback()
-                flash('An error occurred while creating your account. Please try again.', category='error')
-                # Log the exception for debugging
-                print(f"Error creating user: {e}") 
-                # Render template with general error flash, but keep form data
+                db.session.rollback()  # ยกเลิกการเปลี่ยนแปลงถ้าเกิดข้อผิดพลาด
+                flash('เกิดข้อผิดพลาดในการสร้างบัญชี กรุณาลองใหม่อีกครั้ง', category='error')
+                print(f"Error creating user: {e}")  # บันทึกข้อผิดพลาดสำหรับการแก้ไข
                 return render_template("Create_Account.html", user=current_user, errors={}, form_data=request.form)
         
-        # If errors exist, render the form again with errors and form data
+        # ถ้ามีข้อผิดพลาด แสดงฟอร์มพร้อมข้อผิดพลาดและข้อมูลเดิม
         if errors:
-             # Pass both errors and original form data back to the template
              return render_template("Create_Account.html", user=current_user, errors=errors, form_data=request.form)
             
-    # For GET requests or if POST fails before validation logic (shouldn't happen normally)
+    # สำหรับการเรียก GET หรือกรณี POST ล้มเหลวก่อนการตรวจสอบ
     return render_template("Create_Account.html", user=current_user, errors={}, form_data={})
